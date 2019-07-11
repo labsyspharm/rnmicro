@@ -24,3 +24,6 @@ ip.addParamValue('logSigma',[2.5],@(x)(numel(x) >0 & all(x > 0 ))); % specify ra
 ip.addParamValue('Docker','false',@(x)(ismember(x,{'true','false'}))); ip.addParamValue('dockerParams',0,@(x)(numel(x)==1));
 
 Segmentation label masks for nuclei, cytoplasm, and cell will be saved to a subfolder under each parent image folder as a .tif file. Also saved are a 2-channel tif file with the DAPI and nuclei outlines for quality control.
+
+References:
+S Saka, Y Wang, J Kishi, A Zhu, Y Zeng, W Xie, K Kirli, C Yapp, M Cicconet, BJ Beliveau, SW Lapan, S Yin, M Lin, E Boyde, PS Kaeser, G Pihan, GM Church, P Yin, Highly multiplexed in situ protein imaging with signal amplification by Immuno-SABER, Nat Biotechnology (accepted)
