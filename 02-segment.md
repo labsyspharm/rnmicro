@@ -11,7 +11,9 @@ To segment cytoplasm, the nuclei are in turn used for a marker-controlled waters
 
 How to run: In Matlab, set path to the folder of the cloned repo. Type: O2batchS3segmenterWrapperR('/path/to/files/')
 
-Use the following name-value pairs arguments to customize the code to your experiment: ip.addParamValue('HPC','false',@(x)(ismember(x,{'true','false'}))); ip.addParamValue('fileNum',1,@(x)(numel(x) > 0 & all(x > 0 ))); % if using a cluster, this specifies which file index to work on ip.addParamValue('CytoMaskChan',[2],@(x)(numel(x) > 0 & all(x > 0 ))); % select any number of channels for cytoplasm ip.addParamValue('TissueMaskChan',[3],@(x)(numel(x) > 0 & all(x > 0 ))); % select any number of channels for tissue mask ip.addParamValue('RefineTissueMask',[0],@(x)(numel(x) > 0 & all(x > 0 ))); % constrict the tissue mask to eliminate high autofluorescent regions
+Use the following name-value pairs arguments to customize the code to your experiment: 
+ip.addParamValue('HPC','false',@(x)(ismember(x,{'true','false'}))); 
+ip.addParamValue('fileNum',1,@(x)(numel(x) > 0 & all(x > 0 ))); % if using a cluster, this specifies which file index to work on ip.addParamValue('CytoMaskChan',[2],@(x)(numel(x) > 0 & all(x > 0 ))); % select any number of channels for cytoplasm ip.addParamValue('TissueMaskChan',[3],@(x)(numel(x) > 0 & all(x > 0 ))); % select any number of channels for tissue mask ip.addParamValue('RefineTissueMask',[0],@(x)(numel(x) > 0 & all(x > 0 ))); % constrict the tissue mask to eliminate high autofluorescent regions
 
 ip.addParamValue('mask','tissue',@(x)(ismember(x,{'TMA','tissue','none'}))); % set to true if sample is TMA cores ip.addParamValue('crop','noCrop',@(x)(ismember(x,{'interactiveCrop','autoCrop','dearray','noCrop'}))); % interactiveCrop - a GUI-based crop selector, 'autoCrop' - takes the middle third region,'dearray', set to true if using TMA cores, 'noCrop', no cropping
 
