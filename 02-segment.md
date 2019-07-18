@@ -55,7 +55,8 @@ ip.addParamValue('logSigma',[2.5],@(x)(numel(x) >0 & all(x > 0 )));
 % channels for measuring features. If 0, assume all channels. 
 ip.addParamValue('chanRange',[0],@(x)(numel(x) >0 & all(x > 0 ))); 
 ip.addParamValue('upSample',2,@(x)(numel(x) == 1 & all(x > 0 )));
-ip.addParamValue('Docker','false',@(x)(ismember(x,{'true','false'}))); ip.addParamValue('dockerParams',0,@(x)(numel(x)==1));
+ip.addParamValue('Docker','false',@(x)(ismember(x,{'true','false'}))); 
+ip.addParamValue('dockerParams',0,@(x)(numel(x)==1));
 ```
 
 Segmentation label masks for nuclei, cytoplasm, and cell will be saved to a subfolder under each parent image folder as a .tif file. Also saved are a 2-channel tif file with the DAPI and nuclei outlines for quality control.
