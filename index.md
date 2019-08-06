@@ -11,7 +11,7 @@ github-repo: labsyspharm/rnmicro
 # Quick Start {-}
 
 1. [Stitch and register your images with ASHLAR](#ashlar)
-2. [Segment your images to individual cells](#segment)
+2. [Segment your images to locate individual cells](#segment)
 3. [Assign cell type identities](#celltype)
 
 The instructions are under development as the LSP image processing pipeline matures. If you have a module that you would like to see included, please view the vignette on [how to contribute](#howto) to this guide.
