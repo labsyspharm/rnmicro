@@ -20,8 +20,9 @@ folders_to_make = ['dearray/masks','prob_maps','segmentation','feature_extractio
                    'clustering/consensus', 'clustering/drclust', 'clustering/pamsig','cell_states',
                    'illumination_profiles','registration']
 for d in samples:
+    print('Making folder structure for sample:', d)
     for f in folders_to_make:
-        print('Making folder structure for sample:',f)
+        print('Making folder structure:',f)
         try:
             os.makedirs(str(sys.argv[1])+'/'+d+'/'+f)
         except:
