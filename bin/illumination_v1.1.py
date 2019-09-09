@@ -45,7 +45,6 @@ files_exp.sort(key=path_to_date)
 
 if len(files_exp) == 0:
     print('No rcpnl or xdce files found in', str(raw_dir))
-    continue
 
 print('Processing files in', str(raw_dir))
 print(datetime.datetime.now())
