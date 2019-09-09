@@ -13,7 +13,7 @@ from toolbox.ftools import *
 from toolbox.PartitionOfImage import PI2D
 
 # Location
-image_dir = os.path.normpath(sys.argv[1])
+image_dir = os.path.normpath(sys.argv[1]) #expects 1 folder for 1 image
 dapi = int(sys.argv[2])
 hs = int(sys.argv[3])
 vs = int(sys.argv[4])
@@ -162,7 +162,6 @@ class UNet2D:
 
 		sm = tf.nn.softmax(t,-1)
 		UNet2D.nn = sm
-
 
 	def train(imPath,logPath,modelPath,pmPath,nTrain,nValid,nTest,restoreVariables,nSteps,gpuIndex,testPMIndex):
 		os.environ['CUDA_VISIBLE_DEVICES']= '%d' % gpuIndex
@@ -537,11 +536,13 @@ if __name__ == '__main__':
 
 	UNet2D.singleImageInferenceSetup(modelPath, 0)
 	imagePath = image_dir
-	sampleList = next(os.walk(sys.argv[1]))[1]
+	#sampleList = next(os.walk(sys.argv[1]))[1]
+	sampleList = image_dir #set sample list to directory
 	print('Samples to Process')
 	print(sampleList)
 	dapiChannel = dapi
-	for iSample in sampleList:
+	iSample = sampleList #change from directory to individual sample
+	#for iSample in sampleList:
 		fileList = glob.glob(iSample + '/registration/*ome.tif') ## fileList = glob.glob(iSample + '//registration//*ome.tif')
 		print(fileList)
 		for iFile in fileList:
