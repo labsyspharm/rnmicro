@@ -47,14 +47,25 @@ def master(samples):
         # populate the list with each file (TOFIX:list comprehension?)
         for z in range(0, len(tmp)):
 
+            #error checking
+            if len([i for i in tmp if samples[z] in i]) != 1:
+                print('Sample length error! Check O2 submission stack')
+
             #rearrange order of samples is consistent ie image 1 goes with all image 1 pipeline defined by variable samples
             res[z + 1].append([i for i in tmp if samples[z] in i][0])
+
+
+
             #res[i+1].append(tmp[i])
 
     #write list to file with job id dependencies [TODO] separate into function to handle O2 job dependency separately
     f = open('Run_CyCif_pipeline.sh', 'w')
     with redirect_stdout(f):
         print('#!/bin/bash')
+
+        #User viewing
+        print('echo Submitting Jobs')
+
         #QC step
         print('jid0=$(sbatch --parsable '+res[0][0]+')')
 
@@ -87,6 +98,9 @@ def master(samples):
                     #update ids for place in stack
                     previous_job_id = current_jobID
                     current_jobID = current_jobID + 1
+
+        #tell User done submitting
+        print ('echo Successfully submitted CyCif Pipeline')
     f.close()
 
 ################################
@@ -163,8 +177,8 @@ class Ilumination(object):
     def sbatch_def(self):
         #update Job name and output to be reflective of sample
         self.sbatch[3] = ''.join(['-J illum_'+self.sample])
-        self.sbatch[4] = ''.join(['-o illumination_' + self.sample + '.o'])
-        self.sbatch[5] = ''.join(['-e illumination_' + self.sample + '.e'])
+        self.sbatch[4] = ''.join(['-o ' + self.sample + '_illumination.o'])
+        self.sbatch[5] = ''.join(['-e ' + self.sample + '_illumination.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
@@ -261,7 +275,7 @@ class Probability_Mapper(object):
     directory = master_dir
     executable_path = '../bin/run_batchUNet2DtCycif_V1.py'
     #parameters = ['/n/groups/lsp/cycif/CyCif_Manager/bin/run_batchUNet2DtCycif_v1.py',0,1,1]
-    parameters = [''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_v1' + Version + '.py']), 0, 1, 1]
+    parameters = [''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_' + Version + '.py']), 0, 1, 1]
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
     run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
