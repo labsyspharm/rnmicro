@@ -7,9 +7,14 @@ import shutil
 import glob
 
 #handles path to data correctly
-#master_dir = os.path.normpath(sys.argv[1])
-master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/example_data/')
-os.chdir('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/O2')
+master_dir = os.path.normpath(sys.argv[1])
+
+#local testing
+#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/example_data/')
+#os.chdir('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/O2')
+
+#easy global environment path on O2 (for switching between testing and stable versions)
+O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/'
 
 ######################
 #O2 Handling Function#
@@ -19,7 +24,7 @@ os.chdir('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/O2')
 def master(samples):
     #create list of lists to handle organizing job ranking and submission
 
-    #look for all scripts to include in O2 run
+    #look for all scripts to include in O2 run [TODO] separate into function to handle file processing
     files = glob.glob('*.sh')
 
     #Order of list is dependent on order of pipeline steps to be run
@@ -31,7 +36,7 @@ def master(samples):
     # for QC step
     res[0] = [i for i in files if pipeline[0] in i]
 
-    #make list of lists for each sample to be put together
+    #make list of lists for each sample and its processing stack to put together
     for n in range(1,len(pipeline)):
 
         #grab all files to be run as part of each stage
@@ -41,29 +46,42 @@ def master(samples):
         for i in range(0,len(tmp)):
             res[i+1].append(tmp[i])
 
-    #write list to file with job id dependencies
+    #write list to file with job id dependencies [TODO] separate into function to handle O2 job dependency separately
     f = open('Run_CyCif_pipeline.sh', 'w')
     with redirect_stdout(f):
         print('#!/bin/bash')
         #QC step
-        print('jid1=$(sbatch --parsable '+res[0][0]+')')
+        print('jid0=$(sbatch --parsable '+res[0][0]+')')
+
+        #initialize variables [todo] not sure why needed, but error thrown if not
+        current_jobID = 1
+        previous_job_id = 0
 
         #each step dependent on QC run, then a stack is made separated for each individual sample ID
-        for i in range(1,len(res)):
-            for n in range(0,len(res[i])):
-                if i == 0 & n == 0:
-                    current_jobID = 2
+        for i in range(1,len(res)): #length to number of samples
+            for n in range(0,len(res[i])): #length to number of processing steps for each individual sample
+                # if first image and first in processing stack, initialize jobIDs
+                #print("i:"+str(i)+" n:"+str(n)+ " current_jobID:"+str(current_jobID)+ " previous_job_id:"+str(previous_job_id)+('\n'))
+                if (i == 1) & (n == 0):
+                    #current_jobID = 1
+                    #previous_job_id = 0
+                    print('jid' + str(current_jobID) + '=$(sbatch --dependency=afterok:$jid' + str(previous_job_id) + ' --parsable ' + res[i][n] + ')')
+                    previous_job_id = previous_job_id + 1
+                    current_jobID = current_jobID + 1
 
-                if n == 0:
-                    previous_job_id = 1
-                    print('jid'+str(current_jobID)+'=$(sbatch --dependency=afterok:$jid'+str(previous_job_id)+' --parsable '+res[i][n]+')')
-                    previous_job_id=previous_job_id+1
-                    #current_jobID=current_jobID+1
+                # if not first job in pipeline stack, bump up as normal
+                if n != 0:
+                    print('jid' + str(current_jobID) + '=$(sbatch --dependency=afterok:$jid' + str(previous_job_id) + ' --parsable ' + res[i][n] + ')')
+                    previous_job_id = previous_job_id + 1
+                    current_jobID = current_jobID + 1
 
-                print('jid' + str(current_jobID) + '=$(sbatch --dependency=afterok:$jid' + str(previous_job_id) + ' --parsable ' + res[i][n] + ')')
-                previous_job_id = previous_job_id + 1
-                current_jobID = current_jobID + 1
-
+                # if the second image and first in processing stack, previous job id must depend on QC step
+                if (i >= 2) & (n == 0):
+                    previous_job_id = 0
+                    print('jid' + str(current_jobID) + '=$(sbatch --dependency=afterok:$jid' + str(previous_job_id) + ' --parsable ' + res[i][n] + ')')
+                    #update ids for place in stack
+                    previous_job_id = current_jobID
+                    current_jobID = current_jobID + 1
     f.close()
 
 ################################
@@ -74,7 +92,8 @@ def master(samples):
 class QC(object):
     directory = master_dir
     executable_path = '../bin/check_folder_v1.py'
-    environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/cycif_pipeline'
+    #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/cycif_pipeline'
+    environment = ''.join([O2_global_path+'cycif_pipeline'])
     parameters = master_dir
     modules = ['conda2/4.2.13']
     run = 'python /n/groups/lsp/cycif/CyCif_Manager/bin/check_folder_v1.py'
@@ -118,7 +137,8 @@ class QC(object):
 
 #Illumination Profiles (pre-req for ashlar) [TODO]
 class Ilumination(object):
-    environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ImageJ'
+    #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ImageJ'
+    environment = ''.join([O2_global_path+'ImageJ'])
     directory = master_dir
     parameters = '/n/groups/lsp/cycif/CyCif_Manager/bin/illumination_v1.py'
     modules = ['conda2/4.2.13']
@@ -169,7 +189,8 @@ class Ilumination(object):
 class Stitcher(object):
     method = 'Ashlar'
     run = 'No'
-    environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ashlar'
+    #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ashlar'
+    environment = ''.join([O2_global_path + 'ashlar'])
     directory = master_dir
     program = '/n/groups/lsp/cycif/CyCif_Manager/bin/run_ashlar_v1.py'
     modules = ['conda2/4.2.13']
@@ -219,7 +240,8 @@ class Stitcher(object):
 class Probability_Mapper(object):
     method = 'Unet'
     run = 'No'
-    environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/unet'
+    #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/unet'
+    environment = ''.join([O2_global_path + 'unet'])
     directory = master_dir
     executable_path = '../bin/run_batchUNet2DtCycif_V1.py'
     parameters = ['/n/groups/lsp/cycif/CyCif_Manager/bin/run_batchUNet2DtCycif_v1.py',0,1,1]
@@ -273,7 +295,10 @@ class Segementer(object):
     directory = master_dir
     modules = ['matlab/2018b']
     run = 'matlab -nodesktop -r '
-    program = '"addpath(genpath(\'/n/groups/lsp/cycif/CyCif_Manager/environments/segmenter/\'));O2batchS3segmenterWrapperR('
+    #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/segmenter/'
+    environment = ''.join([O2_global_path + 'segmenter'])
+    #program = ''.join(['"addpath(genpath(\'',self.environment,'\'));O2batchS3segmenterWrapperR('])
+    program = 'NA'
     parameters =  ",'HPC','true','fileNum',1,'TissueMaskChan',[2],'logSigma',[3 30],'mask'," \
                   "'tissue','segmentCytoplasm','ignoreCytoplasm')\""
     sbatch = ['-p short', '-t 0-12:00', '-c 1','--mem=100G', '-J segmenter', '-o segmenter.o', '-e segmenter.e']
@@ -282,6 +307,7 @@ class Segementer(object):
     #initilizing class and printing when done
     def __init__(self):
         print ("Initialize Segmenter Definition")
+        self.program = ''.join(['"addpath(genpath(\'', self.environment, '\'));O2batchS3segmenterWrapperR('])
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
@@ -325,7 +351,11 @@ class feature_extractor(object):
     directory = master_dir
     modules = ['matlab/2018b']
     run = 'matlab -nodesktop -r '
-    program = '"addpath(genpath(\'/n/groups/lsp/cycif/CyCif_Manager/environments/histoCAT/\'));Headless_histoCAT_loading('
+    #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/histoCAT/'
+    environment = ''.join([O2_global_path + 'histoCAT'])
+    program = 'NA'
+    #program = '"addpath(genpath(\'/n/groups/lsp/cycif/CyCif_Manager/environments/histoCAT/\'));Headless_histoCAT_loading('
+    #program = ''.join(['"addpath(genpath(\'',self.environment,'\'));O2batchS3segmenterWrapperR('])
     parameters = ["5", "no"]
     sbatch = ['-p short', '-t 0-12:00', '-c 8','--mem=100G', '-J feature_extractor', '-o feature_extractor.o', '-e feature_extractor.e']
     sample = 'NA'
@@ -333,6 +363,7 @@ class feature_extractor(object):
     #initilizing class and printing when done
     def __init__(self):
         print ("Initialize Feature Extractor Definition")
+        self.program = ''.join(['"addpath(genpath(\'', self.environment, '\'));Headless_histoCAT_loading('])
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
