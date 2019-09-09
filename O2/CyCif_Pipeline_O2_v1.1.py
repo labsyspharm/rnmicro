@@ -7,12 +7,12 @@ import shutil
 import glob
 
 #handles path to data correctly
-master_dir = os.path.normpath(sys.argv[1])
-os.chdir(master_dir)
+#master_dir = os.path.normpath(sys.argv[1])
+#os.chdir(master_dir)
 
 #local testing
-#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/example_data/')
-#os.chdir('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/O2')
+master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
+os.chdir('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/O2')
 
 #easy global environment path and version updating on O2 (for switching between testing and stable versions)
 O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
@@ -44,9 +44,12 @@ def master(samples):
         #grab all files to be run as part of each stage
         tmp = [i for i in files if pipeline[n] in i]
 
-        #populate the list with each file (TOFIX:list comprehension?)
-        for i in range(0,len(tmp)):
-            res[i+1].append(tmp[i])
+        # populate the list with each file (TOFIX:list comprehension?)
+        for z in range(0, len(tmp)):
+
+            #rearrange order of samples is consistent ie image 1 goes with all image 1 pipeline defined by variable samples
+            res[z + 1].append([i for i in tmp if samples[z] in i][0])
+            #res[i+1].append(tmp[i])
 
     #write list to file with job id dependencies [TODO] separate into function to handle O2 job dependency separately
     f = open('Run_CyCif_pipeline.sh', 'w')
