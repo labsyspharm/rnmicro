@@ -13,8 +13,9 @@ master_dir = os.path.normpath(sys.argv[1])
 #master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/example_data/')
 #os.chdir('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/O2')
 
-#easy global environment path on O2 (for switching between testing and stable versions)
-O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/'
+#easy global environment path and version updating on O2 (for switching between testing and stable versions)
+O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
+Version = 'v1.1'
 
 ######################
 #O2 Handling Function#
@@ -93,10 +94,11 @@ class QC(object):
     directory = master_dir
     executable_path = '../bin/check_folder_v1.py'
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/cycif_pipeline'
-    environment = ''.join([O2_global_path+'cycif_pipeline'])
+    environment = ''.join([O2_global_path+'environments/cycif_pipeline'])
     parameters = master_dir
     modules = ['conda2/4.2.13']
-    run = 'python /n/groups/lsp/cycif/CyCif_Manager/bin/check_folder_v1.py'
+    run = ''.join(['python ' + O2_global_path + 'bin/check_folder_' + Version + '.py'])
+    #run = 'python /n/groups/lsp/cycif/CyCif_Manager/bin/check_folder_v1.py'
     sbatch = ['-p short', '-t 0-1:00', '-J QC', '-o QC.o', '-e QC.e']
 
     # initilizing class and printing when done
@@ -138,9 +140,10 @@ class QC(object):
 #Illumination Profiles (pre-req for ashlar) [TODO]
 class Ilumination(object):
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ImageJ'
-    environment = ''.join([O2_global_path+'ImageJ'])
+    environment = ''.join([O2_global_path+'environments/ImageJ'])
     directory = master_dir
-    parameters = '/n/groups/lsp/cycif/CyCif_Manager/bin/illumination_v1.py'
+    parameters = ''.join([O2_global_path + 'bin/illumination_' + Version + '.py'])
+    #parameters = '/n/groups/lsp/cycif/CyCif_Manager/bin/illumination_v1.py'
     modules = ['conda2/4.2.13']
     run = 'python '
     sbatch = ['-p short', '-t 0-12:00', '--mem=64G', '-J illumination',
@@ -190,9 +193,10 @@ class Stitcher(object):
     method = 'Ashlar'
     run = 'No'
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ashlar'
-    environment = ''.join([O2_global_path + 'ashlar'])
+    environment = ''.join([O2_global_path + 'environments/ashlar'])
     directory = master_dir
-    program = '/n/groups/lsp/cycif/CyCif_Manager/bin/run_ashlar_v1.py'
+    #program = '/n/groups/lsp/cycif/CyCif_Manager/bin/run_ashlar_v1.py'
+    program = ''.join([O2_global_path + 'bin/run_ashlar_' + Version + '.py'])
     modules = ['conda2/4.2.13']
     run = 'python'
     sbatch = ['-p short','-t 0-12:00', '--mem=64G', '-J ashlar',
@@ -241,10 +245,11 @@ class Probability_Mapper(object):
     method = 'Unet'
     run = 'No'
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/unet'
-    environment = ''.join([O2_global_path + 'unet'])
+    environment = ''.join([O2_global_path + 'environments/unet'])
     directory = master_dir
     executable_path = '../bin/run_batchUNet2DtCycif_V1.py'
-    parameters = ['/n/groups/lsp/cycif/CyCif_Manager/bin/run_batchUNet2DtCycif_v1.py',0,1,1]
+    #parameters = ['/n/groups/lsp/cycif/CyCif_Manager/bin/run_batchUNet2DtCycif_v1.py',0,1,1]
+    parameters = ''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_v1' + Version + '.py',0,1,1])
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
     run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
@@ -296,7 +301,7 @@ class Segementer(object):
     modules = ['matlab/2018b']
     run = 'matlab -nodesktop -r '
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/segmenter/'
-    environment = ''.join([O2_global_path + 'segmenter'])
+    environment = ''.join([O2_global_path + 'environments/segmenter'])
     #program = ''.join(['"addpath(genpath(\'',self.environment,'\'));O2batchS3segmenterWrapperR('])
     program = 'NA'
     parameters =  ",'HPC','true','fileNum',1,'TissueMaskChan',[2],'logSigma',[3 30],'mask'," \
@@ -352,7 +357,7 @@ class feature_extractor(object):
     modules = ['matlab/2018b']
     run = 'matlab -nodesktop -r '
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/histoCAT/'
-    environment = ''.join([O2_global_path + 'histoCAT'])
+    environment = ''.join([O2_global_path + 'environments/histoCAT'])
     program = 'NA'
     #program = '"addpath(genpath(\'/n/groups/lsp/cycif/CyCif_Manager/environments/histoCAT/\'));Headless_histoCAT_loading('
     #program = ''.join(['"addpath(genpath(\'',self.environment,'\'));O2batchS3segmenterWrapperR('])
