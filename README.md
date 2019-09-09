@@ -8,3 +8,11 @@ both on a local machine and on the O2 cluster at HMS
 
 For more details, please refer to the [mcmicro
 manual](https://labsyspharm.github.io/mcmicro/).
+
+# Versions
+
+V1.1.0
+
+	- Added O2 pipeline parallelization for each pipeline
+	- Fix several bugs related to pipeline handling 
+
