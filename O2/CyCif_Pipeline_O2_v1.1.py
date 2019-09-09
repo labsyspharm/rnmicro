@@ -7,11 +7,11 @@ import shutil
 import glob
 
 #handles path to data correctly
-master_dir = os.path.normpath(sys.argv[1])
+#master_dir = os.path.normpath(sys.argv[1])
 
 #local testing
-#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/example_data/')
-#os.chdir('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/O2')
+master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/CyCif_Manager/example_data/')
+os.chdir('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/O2')
 
 #easy global environment path and version updating on O2 (for switching between testing and stable versions)
 O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
@@ -157,10 +157,14 @@ class Ilumination(object):
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
-        self.sbatch = sbatch_submission()
+        #update Job name and output to be reflective of sample
+        self.sbatch[3] = ''.join(['-J illum_'+self.sample])
+        self.sbatch[4] = ''.join(['-o illumination_' + self.sample + '.o'])
+        self.sbatch[5] = ''.join(['-e illumination_' + self.sample + '.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
+        self.sbatch_def()
         for i in self.sbatch:
             print('#SBATCH ', i)
 
@@ -209,10 +213,14 @@ class Stitcher(object):
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
-        self.sbatch = sbatch_submission()
+        # update Job name and output to be reflective of sample
+        self.sbatch[3] = ''.join(['-J ashlar_' + self.sample])
+        self.sbatch[4] = ''.join(['-o ashlar_' + self.sample + '.o'])
+        self.sbatch[5] = ''.join(['-e ashlar_' + self.sample + '.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
+        self.sbatch_def()
         for i in self.sbatch:
             print('#SBATCH ',i)
 
@@ -249,11 +257,11 @@ class Probability_Mapper(object):
     directory = master_dir
     executable_path = '../bin/run_batchUNet2DtCycif_V1.py'
     #parameters = ['/n/groups/lsp/cycif/CyCif_Manager/bin/run_batchUNet2DtCycif_v1.py',0,1,1]
-    parameters = ''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_v1' + Version + '.py',0,1,1])
+    parameters = [''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_v1' + Version + '.py']), 0, 1, 1]
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
     run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
-              '-e probability_mapper.e','-o probability_mapper.o', '-J prob_mapper']
+              '-J prob_mapper','-o probability_mapper.o','-e probability_mapper.e']
     sample = 'NA'
 
     #initilizing class and printing when done
@@ -262,10 +270,14 @@ class Probability_Mapper(object):
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
-        self.sbatch = sbatch_submission()
+        # update Job name and output to be reflective of sample
+        self.sbatch[6] = ''.join(['-J prob_map_' + self.sample])
+        self.sbatch[7] = ''.join(['-o probability_mapper_' + self.sample + '.o'])
+        self.sbatch[8] = ''.join(['-e probability_mapper_' + self.sample + '.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
+        self.sbatch_def()
         for i in self.sbatch:
             print('#SBATCH ',i)
 
@@ -316,10 +328,14 @@ class Segementer(object):
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
-        self.sbatch = sbatch_submission()
+        # update Job name and output to be reflective of sample
+        self.sbatch[4] = ''.join(['-J segmenter_' + self.sample])
+        self.sbatch[5] = ''.join(['-o segmenter_' + self.sample + '.o'])
+        self.sbatch[6] = ''.join(['-e segmenter_' + self.sample + '.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
+        self.sbatch_def()
         for i in self.sbatch:
             print('#SBATCH ',i)
 
@@ -372,10 +388,14 @@ class feature_extractor(object):
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
-        self.sbatch = sbatch_submission()
+        # update Job name and output to be reflective of sample
+        self.sbatch[4] = ''.join(['-J fea_ext_' + self.sample])
+        self.sbatch[5] = ''.join(['-o feature_extractor_' + self.sample + '.o'])
+        self.sbatch[6] = ''.join(['-e feature_extractor_' + self.sample + '.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
+        self.sbatch_def()
         for i in self.sbatch:
             print('#SBATCH ',i)
 
