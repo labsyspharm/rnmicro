@@ -118,7 +118,7 @@ class QC(object):
     modules = ['conda2/4.2.13']
     run = ''.join(['python ' + O2_global_path + 'bin/check_folder_' + Version + '.py'])
     #run = 'python /n/groups/lsp/cycif/CyCif_Manager/bin/check_folder_v1.py'
-    sbatch = ['-p short', '-t 0-1:00', '-J QC', '-o QC.o', '-e QC.e']
+    sbatch = ['-p short', '-t 0-1:00', '-J QC', '-o Step_1_QC.o', '-e Step_1_QC.e']
 
     # initilizing class and printing when done
     def __init__(self):
@@ -166,7 +166,7 @@ class Ilumination(object):
     modules = ['conda2/4.2.13']
     run = 'python '
     sbatch = ['-p short', '-t 0-12:00', '--mem=64G', '-J illumination',
-              '-o illumination.o', '-e illumination.e']
+              '-o Step_2_illumination.o', '-e Step_2_illumination.e']
     sample = 'NA'
     sbatchfilename = 'NA'
 
@@ -178,8 +178,8 @@ class Ilumination(object):
     def sbatch_def(self):
         #update Job name and output to be reflective of sample
         self.sbatch[3] = ''.join(['-J illum_'+self.sample])
-        self.sbatch[4] = ''.join(['-o ' + self.sample + '_illumination.o'])
-        self.sbatch[5] = ''.join(['-e ' + self.sample + '_illumination.e'])
+        self.sbatch[4] = ''.join(['-o ' + 'Step_2_' + self.sample + '_illumination.o'])
+        self.sbatch[5] = ''.join(['-e ' + 'Step_2_' + self.sample + '_illumination.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
@@ -223,7 +223,7 @@ class Stitcher(object):
     modules = ['conda2/4.2.13']
     run = 'python'
     sbatch = ['-p short','-t 0-12:00', '--mem=64G', '-J ashlar',
-              '-o ashlar.o','-e ashlar.e']
+              '-o Step_3_ashlar.o','-e Step_3_ashlar.e']
     sample = 'NA'
 
     #initilizing class and printing when done
@@ -234,8 +234,8 @@ class Stitcher(object):
     def sbatch_def(self):
         # update Job name and output to be reflective of sample
         self.sbatch[3] = ''.join(['-J ashlar_' + self.sample])
-        self.sbatch[4] = ''.join(['-o ashlar_' + self.sample + '.o'])
-        self.sbatch[5] = ''.join(['-e ashlar_' + self.sample + '.e'])
+        self.sbatch[4] = ''.join(['-o ' + 'Step_3_' + self.sample + '_ashlar.o'])
+        self.sbatch[5] = ''.join(['-e ' + 'Step_3_' + self.sample + '_ashlar.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
@@ -280,7 +280,7 @@ class Probability_Mapper(object):
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
     run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
-              '-J prob_mapper','-o probability_mapper.o','-e probability_mapper.e']
+              '-J prob_mapper','-o Step_4_probability_mapper.o','-e Step_4_probability_mapper.e']
     sample = 'NA'
 
     #initilizing class and printing when done
@@ -291,8 +291,8 @@ class Probability_Mapper(object):
     def sbatch_def(self):
         # update Job name and output to be reflective of sample
         self.sbatch[6] = ''.join(['-J prob_map_' + self.sample])
-        self.sbatch[7] = ''.join(['-o probability_mapper_' + self.sample + '.o'])
-        self.sbatch[8] = ''.join(['-e probability_mapper_' + self.sample + '.e'])
+        self.sbatch[7] = ''.join(['-o ' + 'Step_4_' + self.sample + '_probability_mapper.o'])
+        self.sbatch[8] = ''.join(['-e ' + 'Step_4_' + self.sample + '_probability_mapper.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
@@ -337,7 +337,7 @@ class Segementer(object):
     program = 'NA'
     parameters =  ",'HPC','true','fileNum',1,'TissueMaskChan',[2],'logSigma',[3 30],'mask'," \
                   "'tissue','segmentCytoplasm','ignoreCytoplasm')\""
-    sbatch = ['-p short', '-t 0-12:00', '-c 1','--mem=100G', '-J segmenter', '-o segmenter.o', '-e segmenter.e']
+    sbatch = ['-p short', '-t 0-12:00', '-c 1','--mem=100G', '-J Step_5_segmenter', '-o Step_5_segmenter.o', '-e segmenter.e']
     sample = 'NA'
 
     #initilizing class and printing when done
@@ -349,8 +349,8 @@ class Segementer(object):
     def sbatch_def(self):
         # update Job name and output to be reflective of sample
         self.sbatch[4] = ''.join(['-J segmenter_' + self.sample])
-        self.sbatch[5] = ''.join(['-o segmenter_' + self.sample + '.o'])
-        self.sbatch[6] = ''.join(['-e segmenter_' + self.sample + '.e'])
+        self.sbatch[5] = ''.join(['-o ' + 'Step_5_' + self.sample + '_segmenter.o'])
+        self.sbatch[6] = ''.join(['-e ' + 'Step_5_' + self.sample + '_segmenter.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
@@ -399,7 +399,7 @@ class feature_extractor(object):
     #program = '"addpath(genpath(\'/n/groups/lsp/cycif/CyCif_Manager/environments/histoCAT/\'));Headless_histoCAT_loading('
     #program = ''.join(['"addpath(genpath(\'',self.environment,'\'));O2batchS3segmenterWrapperR('])
     parameters = ["5", "no"]
-    sbatch = ['-p short', '-t 0-12:00', '-c 8','--mem=100G', '-J feature_extractor', '-o feature_extractor.o', '-e feature_extractor.e']
+    sbatch = ['-p short', '-t 0-12:00', '-c 8','--mem=100G', '-J feature_extractor', '-o Step_6_feature_extractor.o', '-e Step_6_feature_extractor.e']
     sample = 'NA'
 
     #initilizing class and printing when done
@@ -411,8 +411,8 @@ class feature_extractor(object):
     def sbatch_def(self):
         # update Job name and output to be reflective of sample
         self.sbatch[4] = ''.join(['-J fea_ext_' + self.sample])
-        self.sbatch[5] = ''.join(['-o feature_extractor_' + self.sample + '.o'])
-        self.sbatch[6] = ''.join(['-e feature_extractor_' + self.sample + '.e'])
+        self.sbatch[5] = ''.join(['-o ' + 'Step_6_' + self.sample + '_feature_extractor.o'])
+        self.sbatch[6] = ''.join(['-e ' + 'Step_6_' + self.sample + '_feature_extractor.e'])
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
