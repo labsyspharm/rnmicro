@@ -8,12 +8,12 @@ import glob
 
 #handles path to data correctly
 #
-#master_dir = os.path.normpath(sys.argv[1])
-#os.chdir(master_dir)
+master_dir = os.path.normpath(sys.argv[1])
+os.chdir(master_dir)
 
 #local testing
-master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
-os.chdir('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/O2')
+#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
+#os.chdir('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/O2')
 
 #easy global environment path and version updating on O2 (for switching between testing and stable versions)
 O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
