@@ -8,12 +8,12 @@ import glob
 
 #handles path to data correctly
 #
-master_dir = os.path.normpath(sys.argv[1])
-os.chdir(master_dir)
+#master_dir = os.path.normpath(sys.argv[1])
+#os.chdir(master_dir)
 
 #local testing
-#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
-#os.chdir('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/O2')
+master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
+os.chdir('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/O2')
 
 #easy global environment path and version updating on O2 (for switching between testing and stable versions)
 O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
@@ -438,7 +438,7 @@ class feature_extractor(object):
         tmp = ''
         tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,"/registration'",","]))
         tmp = tmp.__add__(''.join(["'",self.sample,".ome.tif',"]))
-        tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,'/segmentation/',"'"]))
+        tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,'/segmentation/',"',"]))
         tmp = tmp.__add__(''.join(["'cellMask.tif'",",'",self.directory,"/","markers.csv'",",","'",self.parameters[0] ,"'",",","'",self.parameters[1] ,"')\""]))
         print(self.run,self.program,tmp,sep='')
         print("mv",''.join(['./output/',self.sample,'/*']),''.join([self.directory,'/',self.sample,'/feature_extraction']))
