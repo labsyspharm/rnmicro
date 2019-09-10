@@ -373,7 +373,7 @@ class Segementer(object):
         self.sbatch_exporter()
         self.module_exporter()
         print(self.run,self.program,"'",self.directory+'/'+self.sample,"'",self.parameters,sep='')
-        print("mv", ''.join([self.directory+'/'+self.sample+'/segmentation/'+self.sample]),''.join([self.directory+'/'+self.sample+'/segmentation/']))
+        print("mv", ''.join([self.directory+'/'+self.sample+'/segmentation/'+self.sample+'/*]),''.join([self.directory+'/'+self.sample+'/segmentation/']))
         print("rm -r ", ''.join([self.directory+'/'+self.sample+'/segmentation/'+self.sample]))
         print('sleep 5')  # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID')  # resource usage
@@ -438,7 +438,7 @@ class feature_extractor(object):
         tmp = ''
         tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,"/registration'",","]))
         tmp = tmp.__add__(''.join(["'",self.sample,".ome.tif',"]))
-        tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,'/segmentation/',self.sample,"',"]))
+        tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,'/segmentation/',"'"]))
         tmp = tmp.__add__(''.join(["'cellMask.tif'",",'",self.directory,"/","markers.csv'",",","'",self.parameters[0] ,"'",",","'",self.parameters[1] ,"')\""]))
         print(self.run,self.program,tmp,sep='')
         print("mv",''.join(['./output/',self.sample,'/*']),''.join([self.directory,'/',self.sample,'/feature_extraction']))
