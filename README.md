@@ -13,6 +13,6 @@ manual](https://labsyspharm.github.io/mcmicro/).
 
 V1.1.0
 
-	- Added O2 pipeline parallelization for each pipeline
+	- Added O2 pipeline parallelization for each processed image
 	- Fix several bugs related to pipeline handling 
-
+	- Change log file naming convention for easier reading
