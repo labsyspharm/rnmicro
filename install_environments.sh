@@ -14,9 +14,11 @@ mkdir -p environments
 echo 'Download CyCif Pipeline Environment'
 wget --output-document=cycif_pipeline.tar.gz https://www.dropbox.com/s/32sdgrcnoeji9ta/cycif_pipeline.tar.gz?dl=0
 echo 'Download ImageJ Environment'
-wget --output-document=ImageJ.tar.gz https://www.dropbox.com/s/gw0sf7wc44gtjmi/ImageJ.tar.gz?dl=0
+wget --output-document=ImageJ.tar.gz https://www.dropbox.com/s/gket7972dwhucss/ImageJ.tar.gz?dl=0
 echo 'Downloading Ashlar Environment'
 wget --output-document=ashlar.tar.gz https://www.dropbox.com/s/uhm7qrhvq5b6po6/ashlar.tar.gz?dl=0
+echo 'Downloading cf25 Ashlar Environment'
+wget --output-document=ashlar_cf25.tar.gz https://www.dropbox.com/s/iozzhqoqk6keqzj/ashlar_cf25.tar.gz?dl=0
 echo 'Downloading Unet Environment'
 wget --output-document=cycif-segment-tf-umap.tar.gz https://www.dropbox.com/s/qt4kmn0vvm6w007/unet.tar.gz?dl=0 
 echo 'Downloading Segmenter via Clarence'
@@ -27,6 +29,8 @@ echo 'Uncompressing ImageJ'
 tar -zxf ImageJ.tar.gz --directory ./environments
 echo 'Uncompressing Ashlar'
 tar -zxf ashlar.tar.gz --directory ./environments
+echo 'Uncompressing cf25 Ashlar'
+tar -zxf ashlar_cf25.tar.gz --directory ./environments
 echo 'Uncompressing Unet'
 tar -zxf cycif-segment-tf-umap.tar.gz --directory ./environments
 echo 'Uncompressing Segmenter'

@@ -8,7 +8,7 @@ comprising [stitching and registration](#stitch), [segmentation](#segment), and
 
 Run the following command to install the pipeline execution tools:
 ``` {bash, eval=FALSE}
-bash /n/groups/lsp/cycif/CyCif_Manager/O2_install.sh
+bash /n/groups/lsp/cycif/mcmicro/O2_install.sh
 ```
 
 Run this command to check for success:
@@ -59,7 +59,7 @@ bash Run_CyCif_pipeline.sh
 ## Worked example using a sample dataset
 
 ```{bash, eval=FALSE}
-sbatch --wait transfer.sbatch /n/groups/lsp/cycif/CyCif_Manager/example_data/ /n/scratch2/abc123/example_data
+sbatch --wait transfer.sbatch /n/groups/lsp/cycif/mcmicro/example_data/ /n/scratch2/abc123/example_data
 cd /n/scratch2/abc123/example_data
 cycif_pipeline_activate.sh /n/scratch2/abc123/example_data
 bash Run_CyCif_pipeline.sh
@@ -141,9 +141,9 @@ each slide (explained in [Results]).
 
 #### Requirements
 * Can be run either locally or on O2.
-* For O2, user must have an O2 account and be a member of the `transfer_users`
-  and `ImStor_sorger` groups. Run `groups` on O2 to check.
+* For O2, user must have an O2 account and be a member of the `ImStor_sorger` groups. Run `groups` on O2 to check.
   * Request O2 account and group access at https://rc.hms.harvard.edu/.
+* For the moment, you are responsible for transferring the data to the scratch space
 * Data follows Folder Organization (shown above).
 * File 'markers.csv' containing one marker per row, in the order imaged. Example:
 ```{bash, eval=FALSE}
@@ -155,10 +155,6 @@ DNA2
 mLY6C
 mCD8A
 mCD68
-DNA3
-CD30
-CPARP
-CD7
 ```
 
 ## Frequently Asked Questions
@@ -178,13 +174,13 @@ Assumption: Matlab Installed, Linux Environment (can use linux subsystem for
 windows)
 
 ```
-git clone git@github.com:bioinfonerd/CyCif_O2_Manager.git
+git clone https://github.com/labsyspharm/mcmicro.git
 ```
 
 Install conda environments and example data by running within github directory
 
 ```
-install.sh
+install_environments.sh
 install_example_dataset.sh
 ```
 

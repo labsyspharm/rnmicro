@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH  -p transfer
+#SBATCH  -p short
 #SBATCH  -t 0-12:00
 #SBATCH  -J copy
 #SBATCH  -o copy.o
