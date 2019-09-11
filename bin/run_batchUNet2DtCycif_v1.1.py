@@ -13,7 +13,7 @@ from toolbox.ftools import *
 from toolbox.PartitionOfImage import PI2D
 
 # Location
-image_dir = os.path.normpath(sys.argv[1])
+image_dir = os.path.normpath(sys.argv[1]) #expects 1 folder for 1 image
 dapi = int(sys.argv[2])
 hs = int(sys.argv[3])
 vs = int(sys.argv[4])
@@ -162,7 +162,6 @@ class UNet2D:
 
 		sm = tf.nn.softmax(t,-1)
 		UNet2D.nn = sm
-
 
 	def train(imPath,logPath,modelPath,pmPath,nTrain,nValid,nTest,restoreVariables,nSteps,gpuIndex,testPMIndex):
 		os.environ['CUDA_VISIBLE_DEVICES']= '%d' % gpuIndex
@@ -537,40 +536,42 @@ if __name__ == '__main__':
 
 	UNet2D.singleImageInferenceSetup(modelPath, 0)
 	imagePath = image_dir
-	sampleList = next(os.walk(sys.argv[1]))[1]
+	#sampleList = next(os.walk(sys.argv[1]))[1]
+	sampleList = image_dir #set sample list to directory
 	print('Samples to Process')
 	print(sampleList)
 	dapiChannel = dapi
-	for iSample in sampleList:
-		fileList = glob.glob(iSample + '/registration/*ome.tif') ## fileList = glob.glob(iSample + '//registration//*ome.tif')
-		print(fileList)
-		for iFile in fileList:
-			fileName = os.path.basename(iFile)
-			fileNamePrefix = fileName.split(os.extsep, 1)
-			I = tifffile.imread(iFile, key=dapiChannel)
-			hsize = int((float(I.shape[0])*float(hs)))
-			vsize = int((float(I.shape[1])*float(vs)))
-			I = resize(I,(hsize,vsize))
-			I = im2double(sk.rescale_intensity(I, in_range=(np.min(I), np.max(I)), out_range=(0, 0.983)))
-			outputPath = iSample + '/prob_maps'
-			print(outputPath)
-			if not os.path.exists(outputPath):
-				os.makedirs(outputPath)
-			K = np.zeros((2,I.shape[0],I.shape[1]))
-			contours = UNet2D.singleImageInference(I,'accumulate',1)
-			K[1,:,:] = I
-			K[0,:,:] = contours
-			print('tifwrite before contours')
-			tifwrite(np.uint8(255 * K),
-					 outputPath + '/' + fileNamePrefix[0] + '_ContoursPM_' + str(dapiChannel + 1) + '.tif')
-			del K
-			K = np.zeros((1, I.shape[0], I.shape[1]))
-			nuclei = UNet2D.singleImageInference(I,'accumulate',2)
-			K[0, :, :] = nuclei
-			print('before tifwrite nuclei')
-			tifwrite(np.uint8(255 * K),
-					 outputPath + '/' + fileNamePrefix[0] + '_NucleiPM_' + str(dapiChannel + 1) + '.tif')
-			del K
+	iSample = sampleList #change from directory to individual sample
+	#for iSample in sampleList:
+	fileList = glob.glob(iSample + '/registration/*ome.tif') ## fileList = glob.glob(iSample + '//registration//*ome.tif')
+	print(fileList)
+	for iFile in fileList:
+		fileName = os.path.basename(iFile)
+		fileNamePrefix = fileName.split(os.extsep, 1)
+		I = tifffile.imread(iFile, key=dapiChannel)
+		hsize = int((float(I.shape[0])*float(hs)))
+		vsize = int((float(I.shape[1])*float(vs)))
+		I = resize(I,(hsize,vsize))
+		I = im2double(sk.rescale_intensity(I, in_range=(np.min(I), np.max(I)), out_range=(0, 0.983)))
+		outputPath = iSample + '/prob_maps'
+		print(outputPath)
+		if not os.path.exists(outputPath):
+			os.makedirs(outputPath)
+		K = np.zeros((2,I.shape[0],I.shape[1]))
+		contours = UNet2D.singleImageInference(I,'accumulate',1)
+		K[1,:,:] = I
+		K[0,:,:] = contours
+		print('tifwrite before contours')
+		tifwrite(np.uint8(255 * K),
+				 outputPath + '/' + fileNamePrefix[0] + '_ContoursPM_' + str(dapiChannel + 1) + '.tif')
+		del K
+		K = np.zeros((1, I.shape[0], I.shape[1]))
+		nuclei = UNet2D.singleImageInference(I,'accumulate',2)
+		K[0, :, :] = nuclei
+		print('before tifwrite nuclei')
+		tifwrite(np.uint8(255 * K),
+				 outputPath + '/' + fileNamePrefix[0] + '_NucleiPM_' + str(dapiChannel + 1) + '.tif')
+		del K
 	UNet2D.singleImageInferenceCleanup()
 
 
