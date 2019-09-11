@@ -12,7 +12,7 @@ github-repo: labsyspharm/mcmicro
 
 One-time installation command:
 ``` {bash, eval=FALSE}
-bash /n/groups/lsp/cycif/CyCif_Manager/O2_install.sh
+bash /n/groups/lsp/cycif/mcmicro/O2_install.sh
 ```
 
 Run this once per dataset:
