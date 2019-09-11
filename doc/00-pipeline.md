@@ -9,6 +9,7 @@ comprising [stitching and registration](#stitch), [segmentation](#segment), and
 Run the following command to install the pipeline execution tools:
 ``` {bash, eval=FALSE}
 bash /n/groups/lsp/cycif/mcmicro/O2_install.sh
+source ~/.bash_profile
 ```
 
 Run this command to check for success:
