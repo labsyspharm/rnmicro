@@ -689,7 +689,7 @@ if __name__ == '__main__':
             part6.TMA = 'Yes'
 
         # test if cf25 run or not
-        cf25(self, cf25_test)
+        part3.cf25(self, cf25_test)
 
         #save sbatch files
         part2.save_sbatch_file()
