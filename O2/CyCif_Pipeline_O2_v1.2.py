@@ -214,7 +214,7 @@ def save_module_versions():
     with redirect_stdout(f):
         print('Environment Versions:')
         # go through each environment in /environments/ and check the date of folder to get 'version'
-        environments = next(os.walk(''.join([O2_global_path + '/environments'])))[1]
+        environments = next(os.walk(''.join([O2_global_path])))[1]
         for i in environments:
             print(i)
             print(os.stat(i)) #get last modification time
