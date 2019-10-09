@@ -702,7 +702,7 @@ if __name__ == '__main__':
 
     #merge all sbatch jobs for the samples to be run into one file to be submitted to O2
     print('Integrating CyCif Pipeline')
-    master(samples)
+    master(samples,TMA_Test)
 
     # change permissions to make file runable on linux
     os.system('chmod 755 Run_CyCif_pipeline.sh')
