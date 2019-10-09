@@ -16,17 +16,15 @@ import pandas as pd
 import subprocess
 
 #handles path to data correctly [TODO] implement debugging mode
-#master_dir = os.path.normpath(sys.argv[1])
-#
-#ATM: TMA is appended to classes Stitcher, Segmentation, and Probability Mapper as conditions to be matched
-#TMA_Test = sys.argv[2]
-#cf25_test = sys.argv[3]
+master_dir = os.path.normpath(sys.argv[1])
+TMA_Test = sys.argv[2] #'True' or blank (unless cf25 is to be used otherwise should be 'False')
+cf25_test = sys.argv[3] # 'True' or blank
 #os.chdir(master_dir)
 
 #! for local testing
-master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
-TMA_Test = 'True'
-cf25_test = 'True'
+#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
+#TMA_Test = 'True'
+#cf25_test = 'True'
 
 #! change O2 global path and cycif environment file each update
 O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments'
