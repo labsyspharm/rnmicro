@@ -4,6 +4,7 @@ echo 'Remove Job files'
 rm *.o
 rm *.e
 rm *.sh
+rm *.txt
 echo 'Remove folder structure except raw images'
 rm -r */cell_states  
 rm -r */clustering  
