@@ -552,7 +552,7 @@ class Segementer(object):
         self.sbatch_exporter()
         self.module_exporter()
         print(self.run,self.program,"'",self.directory+'/'+self.sample,"'",self.parameters,sep='')
-        post_run_cleanup()
+        self.post_run_cleanup()
 
     # save the sbatch job script
     def save_sbatch_file(self):
