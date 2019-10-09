@@ -40,7 +40,7 @@ file_type = 'rcpnl'
 #if len(files_exp) == 0:
 #    files_exp = sorted(raw_dir.glob('*xdce'))
 #    file_type = 'xdce'
-files_exp.sort(key=path_to_date)
+#files_exp.sort(key=path_to_date)
 
 print('Processing files in', str(raw_dir))
 print(datetime.datetime.now())
