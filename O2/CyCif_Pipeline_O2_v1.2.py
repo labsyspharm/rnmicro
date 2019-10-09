@@ -371,7 +371,7 @@ class Stitcher(object):
     TMA = 'No'
     environment = ''.join([O2_global_path + 'environments/ashlar'])
     directory = master_dir
-    ashlar_path = ''.join([self.ashlar_path + '/bin/ashlar'])
+    ashlar_path = ''.join([O2_global_path + 'bin/ashlar'])
     program = ''.join([O2_global_path + 'bin/run_ashlar_' + Version + '.py'])
     modules = ['conda2/4.2.13']
     run = 'python'
