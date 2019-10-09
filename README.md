@@ -11,11 +11,22 @@ manual](https://labsyspharm.github.io/mcmicro/).
 
 # Versions
 V1.2.0 - TMA
-	- Added checking if user correctly formatted folder structure for running and warning if not
+	- Added TMA functionality and executed as passing argument 
 	- Added pipeline will not re-run if parts of pipeline already run (ie if ashlar stitched present, start from there) 
-	- Added TMA functionality and executed as passing argument
-	- Add more code comments
-	- Updated user documentation to include TMA inclusion and 
+	- Added more code comments
+	- Updated user documentation to include feedback from non-computer science users 
+	- Add environment and module version tracking
+	- Add ability to update if new versions from developers
+	- Add ability to use ashlar version cf25 for older images
+	- Add varying QC checks to pipeline
+		- Check if cycles are stitched correctly (number of cells identified for each DNA channel should stay the same or decrease)
+		- Check if user correctly formatted folder structure 
+		- Check if resource requirements for O2 need to be changed
+		- Check if user modified raw cycle names and fix if they have
+		- Add image summary for different stages of pipeline
+	- Add summary file of pipeline progress
+	- Add summary of resources used	
+
 
 V1.1.0 - Parallelization
 
