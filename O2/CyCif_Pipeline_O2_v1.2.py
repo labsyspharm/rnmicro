@@ -62,6 +62,7 @@ def file_err_checking(samples,master_dir):
                     print('If your microscope does not output .rcpnl files, pipeline may work, but bug Nathan for not adding your favorite microscope')
 
             except:
+                print(master_dir + '/' + current + '/raw_files')
                 print('Uh Oh! Image: ' + current + ' did not have the raw_files folder')
                 print('Within each image folder, there must be a raw_files folder containing the raw images and metadata for each cycle')
 
@@ -130,7 +131,7 @@ def pipeline_checking(master_dir,samples,pipeline):
 #create list of lists to handle organizing job ranking and submission to slurm
 #input: list of pipeline steps to run and list of samples to integrate
 #[TODO] change to image dependent pipeline stack (for now assume first sample image has the same images already ran)
-def populate_image_job_dependency(pipeline,samples):
+def populate_image_job_dependency(pipeline,samples,files):
     # list length of number of samples plus one to store the QC step
     res = lst = [[] for _ in range(len(samples)+1)]
 
@@ -253,7 +254,7 @@ def master(samples,TMA_Test):
     pipeline=pipeline_checking(master_dir, samples, pipeline)
 
     print('Integrating pipeline')
-    res=populate_image_job_dependency(pipeline, samples)
+    res=populate_image_job_dependency(pipeline, samples,files)
 
     print('Saving Run_CyCif_pipeline.sh')
     save_cycif_pipeline(res)
