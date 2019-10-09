@@ -708,4 +708,4 @@ if __name__ == '__main__':
     os.system('chmod 755 Run_CyCif_pipeline.sh')
 
     #save module and environment versions
-    save_module_versions()
+    #save_module_versions()
