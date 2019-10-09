@@ -8,3 +8,12 @@ git@github.com:labsyspharm/ashlar.git
 git@github.com:HMS-IDAC/UnMicst.git
 #Feature Extractor (Nathan)
 git@github.com:DenisSch/histoCAT.git
+
+
+
+#in theory: initiates
+git submodule update --init --recursive
+#update to latest version
+git submodule update --recursive
+#alt way to update to latest git repo version (still doesn't update)
+git pull --recurse-submodules
