@@ -21,6 +21,6 @@ for i in iter(files):
 	to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*']))
 	for n in to_process:        
 		rename = n.split('/')[-1].split('Scan_')[-1]
-		rename = master_dir + '/' + rename
+		rename = master_dir + '/' + i + '/raw_files/' + rename
 		output = ''.join(['mv ' + n + ' ' + rename]) #execution
 		os.system(output)
