@@ -4,13 +4,12 @@
 #input: project path
 #output: raw image file renamed to remove what the user modified
 
-
 #libraries
 import os
 import glob
 
-#master_dir = os.path.normpath(sys.argv[1])
-master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
+master_dir = os.path.normpath(sys.argv[1])
+#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
 
 #rename all files using order
 files = next(os.walk(master_dir))[1]
