@@ -28,7 +28,7 @@ cf25_test = sys.argv[3] # 'True' or blank
 #cf25_test = 'True'
 
 #! change O2 global path and cycif environment file each update
-O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/'
+O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
 
 #easy global environment path and version updating on O2 (for switching between testing and stable versions)
 #O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
