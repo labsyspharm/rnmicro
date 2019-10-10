@@ -7,6 +7,7 @@
 #libraries
 import os
 import glob
+import sys
 
 master_dir = os.path.normpath(sys.argv[1])
 #master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
