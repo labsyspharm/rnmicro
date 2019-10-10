@@ -17,6 +17,7 @@ import subprocess
 
 #handles path to data correctly [TODO] implement debugging mode
 master_dir = os.path.normpath(sys.argv[1])
+#add condition if absent to make it False
 TMA_Test = sys.argv[2] #'True' or blank (unless cf25 is to be used otherwise should be 'False')
 cf25_test = sys.argv[3] # 'True' or blank
 #os.chdir(master_dir)
@@ -27,7 +28,7 @@ cf25_test = sys.argv[3] # 'True' or blank
 #cf25_test = 'True'
 
 #! change O2 global path and cycif environment file each update
-O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments'
+O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/'
 
 #easy global environment path and version updating on O2 (for switching between testing and stable versions)
 #O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
@@ -326,7 +327,7 @@ class Ilumination(object):
 
     # initilizing class and printing when done
     def __init__(self):
-        print("Initialize Illumination Definition:"+self.sample)
+        print("Initialize Illumination Definition:")
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
@@ -381,7 +382,7 @@ class Stitcher(object):
 
     #initilizing class and printing when done
     def __init__(self):
-        print ("Initialize Stitcher Definition"+self.sample)
+        print ("Initialize Stitcher Definition")
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
@@ -443,7 +444,7 @@ class Probability_Mapper(object):
 
     #initilizing class and printing when done
     def __init__(self):
-        print ("Initialize Probability Mapper Definition"+self.sample)
+        print ("Initialize Probability Mapper Definition")
 
     # what sbatch parameters to load in O2
     def sbatch_def(self):
@@ -499,7 +500,7 @@ class Segementer(object):
 
     #initilizing class and printing when done
     def __init__(self):
-        print ("Initialize Segmenter Definition"+self.sample)
+        print ("Initialize Segmenter Definition")
         self.program = ''.join(['"addpath(genpath(\'', self.environment, '\'));O2batchS3segmenterWrapperR('])
 
     # what sbatch parameters to load in O2
@@ -578,7 +579,7 @@ class feature_extractor(object):
 
     #initilizing class and printing when done
     def __init__(self):
-        print ("Initialize Feature Extractor Definition"+self.sample)
+        print ("Initialize Feature Extractor Definition")
         self.program = ''.join(['"addpath(genpath(\'', self.environment, '\'));Headless_histoCAT_loading('])
 
     # what sbatch parameters to load in O2
