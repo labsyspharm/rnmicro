@@ -14,6 +14,7 @@ import shutil
 import glob
 import pandas as pd
 import subprocess
+import re
 
 #handles path to data correctly [TODO] implement debugging mode
 master_dir = os.path.normpath(sys.argv[1])
@@ -73,6 +74,39 @@ def file_err_checking(samples,master_dir):
         example=['DNA1','MARKER1','MARKER2','MARKER3','DNA2','MARKER4','MARKER5','MARKER6']
         for i in example:
             print(i)
+
+# check if the file name has not been modified as order of image name is how the files are stitched together
+def file_name_checking(samples,master_dir):
+    print('Checking if Raw File Names Have Been Modified (Assuming RareCyte)')
+    files = next(os.walk(master_dir))[1]
+
+    #rename files to ensure correct order
+    for i in iter(files):
+        print('Checking Image:'+i)
+        #find
+        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*']))
+        #remove path length
+        to_process = [i.split('/')[-1] for i in to_process]
+        regex = re.compile(r"'Scan'[0-9]{8}'_'")  # remove any tif files do not have digits in them
+        regex = re.compile(r"'Scan'")
+        tif = [i for i in to_process if regex.search(i)]
+
+        'Scan'
+        'Date'
+
+        Scan_20190612_164155_01x4x00154.metadata
+
+
+
+
+
+        for n in to_process:
+            rename = n.split('/')[-1].split('Scan_')[-1]
+            rename = master_dir + '/' + i + '/raw_files/' + rename
+            output = ''.join(['mv ' + n + ' ' + rename]) #execution
+            os.system(output)
+
+
 
 #check if any module parts of pipeline have already been run
 #input: path to data, list of images, list of pipeline modules to run
@@ -230,8 +264,6 @@ def save_module_versions():
         os.chdir(master_dir)
     f.close()
 
-#
-
 #master function that controls error checking, submission, organizing, creating 'Run_CyCif_Pipeline.sh' for cycif pipeline
 def master(samples,TMA_Test):
     #look for all scripts to include in cycif pipeline
@@ -246,6 +278,9 @@ def master(samples,TMA_Test):
 
     #error checking raw files are where they should be, markers.csv exists, and cycles matches markers.csv number
     file_err_checking(samples, master_dir)
+
+    #checking raw_files names are correctly formatted
+    file_name_checking(samples, master_dir)
 
     #update pipeline list to run based on what files are found to exist (not checking QC of images, just they are present)
     #check whether any parts of pipeline already run using the first image as a reference
