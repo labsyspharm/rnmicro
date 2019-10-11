@@ -76,42 +76,43 @@ def file_err_checking(samples,master_dir):
             print(i)
 
 # check if the file name has not been modified as order of image name is how the files are stitched together
-def file_name_checking(samples,master_dir):
-    print('Checking if Raw File Names Have Been Modified (Assuming RareCyte)')
-    files = next(os.walk(master_dir))[1]
-
-    #rename files to ensure correct order
-    for i in iter(files):
-        print('Checking Image:'+i)
-        #find
-        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*']))
-        #remove path length
-        to_process = [i.split('/')[-1] for i in to_process]
-        regex = re.compile(r"'Scan'[0-9]{8}'_'")  # remove any tif files do not have digits in them
-        regex = re.compile(r"'Scan'")
-        tif = [i for i in to_process if regex.search(i)]
-
-        'Scan'
-        'Date'
-
-        Scan_20190612_164155_01x4x00154.metadata
-
-
-
-
-
-        for n in to_process:
-            rename = n.split('/')[-1].split('Scan_')[-1]
-            rename = master_dir + '/' + i + '/raw_files/' + rename
-            output = ''.join(['mv ' + n + ' ' + rename]) #execution
-            os.system(output)
-
+# def file_name_checking(samples,master_dir):
+#     print('Checking if Raw File Names Have Been Modified (Assuming RareCyte)')
+#     files = next(os.walk(master_dir))[1]
+#
+#     #rename files to ensure correct order
+#     for i in iter(files):
+#         print('Checking Image:'+i)
+#         #find
+#         to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*']))
+#         #remove path length
+#         to_process = [i.split('/')[-1] for i in to_process]
+#         regex = re.compile(r"'Scan'[0-9]{8}'_'")  # remove any tif files do not have digits in them
+#         regex = re.compile(r"'Scan'")
+#         tif = [i for i in to_process if regex.search(i)]
+#
+#         'Scan'
+#         'Date'
+#
+#         Scan_20190612_164155_01x4x00154.metadata
+#
+#
+#
+#
+#
+#         for n in to_process:
+#             rename = n.split('/')[-1].split('Scan_')[-1]
+#             rename = master_dir + '/' + i + '/raw_files/' + rename
+#             output = ''.join(['mv ' + n + ' ' + rename]) #execution
+#             os.system(output)
+#
 
 
 #check if any module parts of pipeline have already been run
 #input: path to data, list of images, list of pipeline modules to run
 #[TODO]: consider markers.csv size
 #[TODO]: consider customizing what is removed on an individual sample basis
+
 def pipeline_checking(master_dir,samples,pipeline):
     for i in samples: #i know bad coding practice to use lots of if then, but lots of customization [TODO] clean up code
         # if illumination ran /image/illumination_profiles = (*dfp.tif  *ffp.tif)
@@ -280,7 +281,7 @@ def master(samples,TMA_Test):
     file_err_checking(samples, master_dir)
 
     #checking raw_files names are correctly formatted
-    file_name_checking(samples, master_dir)
+    #file_name_checking(samples, master_dir)
 
     #update pipeline list to run based on what files are found to exist (not checking QC of images, just they are present)
     #check whether any parts of pipeline already run using the first image as a reference
