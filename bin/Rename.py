@@ -3,6 +3,8 @@
 #call program on project folder parent
 #input: project path
 #output: raw image file renamed to remove what the user modified
+#Example: python /n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/bin/Rename.py [path to project]
+#expectation every folder is an image to process and every folder will have 'raw_files' present
 
 #libraries
 import os

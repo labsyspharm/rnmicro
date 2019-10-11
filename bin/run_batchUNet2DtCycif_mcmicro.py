@@ -8,7 +8,7 @@ import skimage.exposure as sk
 import sys
 
 # Location
-ImageScience = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/dev_module_git/UnMicst/toolbox'
+ImageScience = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/dev_module_git/UnMicst/'
 model_dir = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/dev_module_git/UnMicst/TFModel - 3class 16 kernels 5ks 2 layers'
 
 sys.path.insert(0, ImageScience)
