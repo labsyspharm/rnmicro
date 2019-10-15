@@ -114,7 +114,7 @@ def pipeline_checking(master_dir,samples,pipeline):
     for i in samples: #i know bad coding practice to use lots of if then, but lots of customization [TODO] clean up code
         # if illumination ran /image/illumination_profiles = (*dfp.tif  *ffp.tif)
         if os.access(''.join([master_dir + '/' + i + '/illumination_profiles']),mode=0):
-            print(i + ' Illumination Profile Folder Exists')
+            #print(i + ' Illumination Profile Folder Exists')
 
             #calculate number of cycles to verify illumination was done on
             cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*.rcpnl'])))
@@ -127,7 +127,7 @@ def pipeline_checking(master_dir,samples,pipeline):
 
         # if stitcher ran /image/registration = (*.ome.tif)
         if os.access(''.join([master_dir + '/' + i + '/registration']), mode=0):
-            print(i + ' Registration Folder Found')
+            #print(i + ' Registration Folder Found')
             # if files exist, remove stitcher from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/registration/*.ome.tif']))) == 1):
                 print(i + ' Stitched Image Found, skipping')
@@ -136,7 +136,7 @@ def pipeline_checking(master_dir,samples,pipeline):
 
         #if prob_mapper ran /image/prob_maps = (*ContoursPM_1.tif *NucleiPM_1.tif)
         if os.access(''.join([master_dir + '/' + i + '/prob_maps']), mode=0):
-            print(i + ' Probability Mapper Folder Found')
+            #print(i + ' Probability Mapper Folder Found')
 
             #if files exist, remove prob_mapper from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*ContoursPM_1.tif']))) == 1) & (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*NucleiPM_1.tif']))) == 1):
@@ -146,7 +146,7 @@ def pipeline_checking(master_dir,samples,pipeline):
 
         #if segmenter ran image/segmentation = (cellMask.tif cellOutlines.tif nucleiMask.tif nucleiOutlines.tif segParams.mat)
         if os.access(''.join([master_dir + '/' + i + '/segmentation']), mode=0):
-            print(i + ' Segmentation Folder Found')
+            #print(i + ' Segmentation Folder Found')
             #if files exist, remove segmenter from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/segmentation/*.tif']))) == 4):
                 print(i + 'Segmentation Folder Found, skipping')
@@ -155,14 +155,13 @@ def pipeline_checking(master_dir,samples,pipeline):
 
         #if feature_extractor ran image_1 / feature_extraction = Cell_image_1*.mat == length of markers.csv & sample_name.csv
         if os.access(''.join([master_dir + '/' + i + '/feature_extraction']), mode=0):
-            print(i + 'Feature Extraction Folder Exists')
+            #print(i + ' Feature Extraction Folder Found')
             try:
                 os.access(''.join([master_dir + '/markers.csv']), mode=0)
-                print('Markers File found')
                 markers = pd.read_csv(''.join([master_dir + '/markers.csv']))
 
                 # if files exist, remove feature extracto from pipeline
-                if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)) & os.access(''.join([master_dir + '/' + i + '.csv']), mode=0):
+                if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)+1) & os.access(''.join([master_dir + '/' + i + '.csv']), mode=0):
                     print(i + 'Feature Extractor run previously, skipping')
                     # pop off feature extractor
                     pipeline = [n for n in pipeline if not ('feature_extractor' in n)]
@@ -591,7 +590,7 @@ class Segmenter(object):
     def TMA_mode(self):
         self.environment = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/dev_module_git/batchtmaDearray/TMAsegmentation/'
         self.program = ''.join(['"addpath(genpath(\'', self.environment, '\'));batchtmaDearray('])
-        self.parameters = []
+        self.parameters = ",'outputChan', 0')\""
 
     #find all folder names from the directory path position
     def file_finder(self):
