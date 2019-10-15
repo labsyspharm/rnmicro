@@ -106,33 +106,41 @@ def file_name_checking(samples,master_dir):
             output = ''.join(['mv ' + n + ' ' + rename]) #execution
             os.system(output)
 
-
-
 #check if any module parts of pipeline have already been run
 #input: path to data, list of images, list of pipeline modules to run
 #[TODO]: consider markers.csv size
 #[TODO]: consider customizing what is removed on an individual sample basis
-
 def pipeline_checking(master_dir,samples,pipeline):
     for i in samples: #i know bad coding practice to use lots of if then, but lots of customization [TODO] clean up code
         # if illumination ran /image/illumination_profiles = (*dfp.tif  *ffp.tif)
         if os.access(''.join([master_dir + '/' + i + '/illumination_profiles']),mode=0):
-            #if files exist, remove illumination from pipeline
-            if (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*.dfp.tif']))) >= 1) & (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*.dfp.tif']))) >= 1):
+            print(i + ' Illumination Profile Folder Exists')
+
+            #calculate number of cycles to verify illumination was done on
+            cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*.rcpnl'])))
+
+            #if number of cycles matches the number of expected illumination profiles then remove illumination from pipeline
+            if (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*-dfp.tif']))) == cycle_number) & (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*-ffp.tif']))) == cycle_number):
+                print(i + ' Illumination Files Found, skipping')
                 #pop off illumination check
                 pipeline = [n for n in pipeline if not ('illumination' in n)]
 
         # if stitcher ran /image/registration = (*.ome.tif)
         if os.access(''.join([master_dir + '/' + i + '/registration']), mode=0):
+            print(i + 'Registration Folder Found')
             # if files exist, remove stitcher from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/registration/*.ome.tif']))) == 1):
-                # pop off illumination
+                print(i + ' Stitched Image Found, skipping')
+                # pop off stitcher
                 pipeline = [n for n in pipeline if not ('stitcher' in n)]
 
         #if prob_mapper ran /image/prob_maps = (*ContoursPM_1.tif *NucleiPM_1.tif)
         if os.access(''.join([master_dir + '/' + i + '/prob_maps']), mode=0):
+            print(i + 'Probability Mapper Folder Found')
+
             #if files exist, remove prob_mapper from pipeline
-            if (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*ContoursPM_1.tif']))) >= 1) & (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*NucleiPM_1.tif']))) >= 1):
+            if (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*ContoursPM_1.tif']))) == 1) & (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*NucleiPM_1.tif']))) == 1):
+                print(i + 'Probability Maps Found, skipping')
                 #pop off illumination
                 pipeline = [n for n in pipeline if not ('prob_mapper' in n)]
 
@@ -524,7 +532,7 @@ class Probability_Mapper(object):
         f.close()
 
 #segment fluroscence probes
-class Segementer(object):
+class Segmenter(object):
     method = 'S3'
     run = 'No'
     directory = master_dir
@@ -716,7 +724,7 @@ if __name__ == '__main__':
         part4.sample = n
 
         # define segmenter
-        part5 = Segementer()
+        part5 = Segmenter()
         part5.sample = n
 
         # define histocat
