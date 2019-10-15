@@ -591,6 +591,8 @@ class Segmenter(object):
         self.environment = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/dev_module_git/batchtmaDearray/TMAsegmentation/'
         self.program = ''.join(['"addpath(genpath(\'', self.environment, '\'));batchtmaDearray('])
         self.parameters = ",'outputChan', 0')\""
+        sbatch = ['-p short', '-t 0-12:00', '-c 8', '--mem=100G', '-J Step_5_segmenter', '-o Step_5_segmenter.o',
+                  '-e segmenter.e']
 
     #find all folder names from the directory path position
     def file_finder(self):
