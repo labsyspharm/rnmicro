@@ -16,7 +16,8 @@ import pandas as pd
 import subprocess
 import re
 
-#handles path to data correctly [TODO] implement debugging mode
+#handles path to data correctly
+#[TODO] implement debugging mode
 master_dir = os.path.normpath(sys.argv[1])
 #add condition if absent to make it False
 TMA_Test = sys.argv[2] #'True' or blank (unless cf25 is to be used otherwise should be 'False')
@@ -255,16 +256,17 @@ def save_cycif_pipeline(res):
     f.close()
 
 #save version for each submodule in pipeline
+#save git hash for each module and the last modification time stamp for environments
 def save_module_versions():
     f = open('cycif_pipeline_versions.txt', 'w')
     with redirect_stdout(f):
         print('Environment Versions:')
-        # go through each environment in /environments/ and check the date of folder to get 'version'
+        # go through each environment in /environments/ and capture the environment modification time stamp to get 'version'
         environments = next(os.walk(''.join([O2_global_path + '/environments'])))[1]
         for i in environments:
             print(i)
             print(os.stat(O2_global_path + 'environments' + '/' + i)[-2]) #get last modification time
-        # go through each dev_module_git and spit out version
+        # go through each dev_module_git and spit out github hash version
         print('Module Versions:')
         modules = next(os.walk(''.join([O2_global_path + '/dev_module_git'])))[1]
         for i in modules:
@@ -357,7 +359,7 @@ class QC(object):
             self.print_sbatch_file()
         f.close()
 
-#Illumination Profiles (pre-req for ashlar) [TODO]
+#Illumination Profiles (pre-req for ashlar)
 class Ilumination(object):
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ImageJ'
     environment = ''.join([O2_global_path+'environments/ImageJ'])
@@ -412,7 +414,7 @@ class Ilumination(object):
             self.print_sbatch_file()
         f.close()
 
-#stitch the multiple images together [TODO]: fix what runs
+#stitch the multiple images together
 class Stitcher(object):
     method = 'Ashlar'
     TMA = 'No'
@@ -478,7 +480,7 @@ class Probability_Mapper(object):
     run = 'No'
     environment = ''.join([O2_global_path + 'environments/unet'])
     directory = master_dir
-    parameters = [''.join([O2_global_path + 'dev_module_git/UnMicst/batchUNet2DtCycif.py']), 0, 1, 1]
+    parameters = [''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_mcmicro.py']), 0, 1, 1]
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
     run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
