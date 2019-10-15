@@ -557,20 +557,21 @@ if __name__ == '__main__':
 		vsize = int((float(I.shape[1])*float(vs)))
 		I = resize(I,(hsize,vsize))
 		I = im2double(sk.rescale_intensity(I, in_range=(np.min(I), np.max(I)), out_range=(0, 0.983)))
+		rawI = im2double(rawI) / np.max(im2double(rawI))
 		outputPath = iSample + '/prob_maps'
 		print(outputPath)
 		if not os.path.exists(outputPath):
 			os.makedirs(outputPath)
-		K = np.zeros((2,I.shape[0],I.shape[1]))
+		K = np.zeros((2,rawI.shape[0],rawI.shape[1]))
 		contours = UNet2D.singleImageInference(I,'accumulate',1)
 		contours = resize(contours, (rawI.shape[0], rawI.shape[1]))
-		K[1,:,:] = I
+		K[1,:,:] = rawI
 		K[0,:,:] = contours
 		print('tifwrite before contours')
 		tifwrite(np.uint8(255 * K),
 				 outputPath + '/' + fileNamePrefix[0] + '_ContoursPM_' + str(dapiChannel + 1) + '.tif')
 		del K
-		K = np.zeros((1, I.shape[0], I.shape[1]))
+		K = np.zeros((1, rawI.shape[0], rawI.shape[1]))
 		nuclei = UNet2D.singleImageInference(I,'accumulate',2)
 		nuclei = resize(nuclei, (rawI.shape[0], rawI.shape[1]))
 		K[0, :, :] = nuclei
@@ -579,27 +580,3 @@ if __name__ == '__main__':
 				 outputPath + '/' + fileNamePrefix[0] + '_NucleiPM_' + str(dapiChannel + 1) + '.tif')
 		del K
 	UNet2D.singleImageInferenceCleanup()
-
-
-	# ----- test 2 -----
-
-	# imPath = '/home/mc457/files/CellBiology/IDAC/Marcelo/Etc/UNetTestSets/ClarenceYapp_NucleiSegmentation'
-	# UNet2D.setup(128,1,2,8,2,2,3,1,0.1,3,4)
-	# UNet2D.train(imPath,logPath,modelPath,pmPath,800,100,100,False,10,1)
-	# UNet2D.deploy(imPath,100,modelPath,pmPath,1)
-
-
-	# ----- test 3 -----
-
-	# imPath = '/home/mc457/files/CellBiology/IDAC/Marcelo/Etc/UNetTestSets/CarmanLi_CellTypeSegmentation'
-	# # UNet2D.setup(256,1,2,8,2,2,3,1,0.1,3,4)
-	# # UNet2D.train(imPath,logPath,modelPath,pmPath,1400,100,164,False,10000,1)
-	# UNet2D.deploy(imPath,164,modelPath,pmPath,1)
-
-
-	# ----- test 4 -----
-
-	# imPath = '/home/cicconet/Downloads/TrainSet1'
-	# UNet2D.setup(64,1,2,8,2,2,3,1,0.1,3,4)
-	# UNet2D.train(imPath,logPath,modelPath,pmPath,200,8,8,False,2000,1,0)
-	# # UNet2D.deploy(imPath,164,modelPath,pmPath,1)
