@@ -127,7 +127,7 @@ def pipeline_checking(master_dir,samples,pipeline):
 
         # if stitcher ran /image/registration = (*.ome.tif)
         if os.access(''.join([master_dir + '/' + i + '/registration']), mode=0):
-            print(i + 'Registration Folder Found')
+            print(i + ' Registration Folder Found')
             # if files exist, remove stitcher from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/registration/*.ome.tif']))) == 1):
                 print(i + ' Stitched Image Found, skipping')
@@ -136,31 +136,35 @@ def pipeline_checking(master_dir,samples,pipeline):
 
         #if prob_mapper ran /image/prob_maps = (*ContoursPM_1.tif *NucleiPM_1.tif)
         if os.access(''.join([master_dir + '/' + i + '/prob_maps']), mode=0):
-            print(i + 'Probability Mapper Folder Found')
+            print(i + ' Probability Mapper Folder Found')
 
             #if files exist, remove prob_mapper from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*ContoursPM_1.tif']))) == 1) & (len(glob.glob(''.join([master_dir + '/' + i + '/prob_maps/*NucleiPM_1.tif']))) == 1):
-                print(i + 'Probability Maps Found, skipping')
+                print(i + ' Probability Maps Found, skipping')
                 #pop off illumination
                 pipeline = [n for n in pipeline if not ('prob_mapper' in n)]
 
         #if segmenter ran image/segmentation = (cellMask.tif cellOutlines.tif nucleiMask.tif nucleiOutlines.tif segParams.mat)
         if os.access(''.join([master_dir + '/' + i + '/segmentation']), mode=0):
+            print(i + ' Segmentation Folder Found')
             #if files exist, remove segmenter from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/segmentation/*.tif']))) == 4):
+                print(i + 'Segmentation Folder Found, skipping')
                 #pop off segmenter
                 pipeline = [n for n in pipeline if not ('segmenter' in n)]
 
         #if feature_extractor ran image_1 / feature_extraction = Cell_image_1*.mat == length of markers.csv & sample_name.csv
         if os.access(''.join([master_dir + '/' + i + '/feature_extraction']), mode=0):
-
+            print(i + 'Feature Extraction Folder Exists')
             try:
                 os.access(''.join([master_dir + '/markers.csv']), mode=0)
+                print('Markers File found')
                 markers = pd.read_csv(''.join([master_dir + '/markers.csv']))
 
-                # if files exist, remove segmenter from pipeline
+                # if files exist, remove feature extracto from pipeline
                 if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)) & os.access(''.join([master_dir + '/' + i + '.csv']), mode=0):
-                    # pop off segmenter
+                    print(i + 'Feature Extractor run previously, skipping')
+                    # pop off feature extractor
                     pipeline = [n for n in pipeline if not ('feature_extractor' in n)]
 
             except:
@@ -195,7 +199,7 @@ def populate_image_job_dependency(pipeline,samples,files):
             #easy fix: change a sample name so the base name doesn't overlap
             #for example: image_1 vs image_1A = cause it to trip
             if len([i for i in tmp if samples[z] in i]) != 1:
-                print('Sample length error! Check O2 submission stack')
+                print('Sample length error! Check Run_CyCif_pipeline.sh for correct job dependency')
 
             #rearrange order of samples is consistent ie image 1 goes with all image 1 pipeline defined by variable samples
             res[z + 1].append([i for i in tmp if samples[z] in i][0])
@@ -476,7 +480,7 @@ class Probability_Mapper(object):
     run = 'No'
     environment = ''.join([O2_global_path + 'environments/unet'])
     directory = master_dir
-    parameters = [''.join([O2_global_path + 'dev_module_git/batchUNet2DtCycif.py']), 0, 1, 1]
+    parameters = [''.join([O2_global_path + 'dev_module_git/UnMicst/batchUNet2DtCycif.py']), 0, 1, 1]
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
     run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
@@ -508,7 +512,7 @@ class Probability_Mapper(object):
 
     #modifies environment and program if TMA_test is True
     def TMA_mode(self):
-        self.parameters = [''.join([O2_global_path + 'dev_module_git/batchUNet2DTMACycif.py']), 0, 1, 1]
+        self.parameters = [''.join([O2_global_path + 'dev_module_git/UnMicst/batchUNet2DTMACycif.py']), 0, 1, 1]
 
     #print the sbatch job script
     def print_sbatch_file(self):
