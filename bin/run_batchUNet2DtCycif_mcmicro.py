@@ -553,6 +553,7 @@ if __name__ == '__main__':
 		fileName = os.path.basename(iFile)
 		fileNamePrefix = fileName.split(os.extsep, 1)
 		I = tifffile.imread(iFile, key=dapiChannel)
+		rawI = I
 		hsize = int((float(I.shape[0])*float(hs)))
 		vsize = int((float(I.shape[1])*float(vs)))
 		I = resize(I,(hsize,vsize))
