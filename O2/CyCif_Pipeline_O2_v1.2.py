@@ -268,10 +268,10 @@ def save_module_versions():
 #master function that controls error checking, submission, organizing, creating 'Run_CyCif_Pipeline.sh' for cycif pipeline
 def master(samples,TMA_Test):
     #look for all scripts to include in cycif pipeline
-    files = sorted(glob.glob('*.sh'))
+    files = sorted(glob.glob('*.sh')) #check for miserror
 
     if TMA_Test == 'True':
-        # Order of list is dependent on order of pipeline steps to be run
+        # Order of list is dependent on order of pipeline steps to be run [segmenter vs prob_mapper]
         pipeline = ['QC', 'illumination', 'stitcher', 'segmenter', 'prob_mapper', 'feature_extractor']
     else:
         # Order of list is dependent on order of pipeline steps to be run
@@ -290,7 +290,7 @@ def master(samples,TMA_Test):
     pipeline=pipeline_checking(master_dir, samples, pipeline)
 
     print('Integrating pipeline')
-    res=populate_image_job_dependency(pipeline, samples,files)
+    res=populate_image_job_dependency(pipeline, samples, files)
 
     print('Saving Run_CyCif_pipeline.sh')
     save_cycif_pipeline(res)
@@ -468,9 +468,7 @@ class Probability_Mapper(object):
     run = 'No'
     environment = ''.join([O2_global_path + 'environments/unet'])
     directory = master_dir
-    executable_path = '../bin/run_batchUNet2DtCycif_V1.py'
-    #parameters = ['/n/groups/lsp/cycif/CyCif_Manager/bin/run_batchUNet2DtCycif_v1.py',0,1,1]
-    parameters = [''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_mcmicro.py']), 0, 1, 1]
+    parameters = [''.join([O2_global_path + 'dev_module_git/batchUNet2DtCycif.py']), 0, 1, 1]
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
     run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
@@ -500,8 +498,14 @@ class Probability_Mapper(object):
         for i in self.modules:
             print('module load',i)
 
+    #modifies environment and program if TMA_test is True
+    def TMA_mode(self):
+        self.parameters = [''.join([O2_global_path + 'dev_module_git/batchUNet2DTMACycif.py']), 0, 1, 1]
+
     #print the sbatch job script
     def print_sbatch_file(self):
+        if self.TMA == 'True':
+            TMA_mode()
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
