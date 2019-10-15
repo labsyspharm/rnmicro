@@ -281,7 +281,7 @@ def master(samples,TMA_Test):
     file_err_checking(samples, master_dir)
 
     #checking raw_files names are correctly formatted
-    file_name_checking(samples, master_dir)
+    #file_name_checking(samples, master_dir)
 
     #update pipeline list to run based on what files are found to exist (not checking QC of images, just they are present)
     #check whether any parts of pipeline already run using the first image as a reference
