@@ -256,15 +256,14 @@ def save_cycif_pipeline(res):
 
 #save version for each submodule in pipeline
 def save_module_versions():
-
     f = open('cycif_pipeline_versions.txt', 'w')
     with redirect_stdout(f):
         print('Environment Versions:')
         # go through each environment in /environments/ and check the date of folder to get 'version'
-        environments = next(os.walk(''.join([O2_global_path])))[1]
+        environments = next(os.walk(''.join([O2_global_path + '/environments'])))[1]
         for i in environments:
             print(i)
-            print(os.stat(i)) #get last modification time
+            print(os.stat(O2_global_path + 'environments' + '/' + i)[-2]) #get last modification time
         # go through each dev_module_git and spit out version
         print('Module Versions:')
         modules = next(os.walk(''.join([O2_global_path + '/dev_module_git'])))[1]
