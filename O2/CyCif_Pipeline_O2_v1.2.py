@@ -172,7 +172,7 @@ def pipeline_checking(master_dir,samples,pipeline):
             #print(i + ' Feature Extraction Folder Found')
 
             # function file_err_checking checks for markers.csv file, otherwise it will print missing for each sample == redundant
-            if os.access(''.join([master_dir + '/markers.csv']), mode=0)
+            if os.access(''.join([master_dir + '/markers.csv']), mode=0):
                 markers = pd.read_csv(''.join([master_dir + '/markers.csv']))
 
                 # if files exist, remove feature extracto from pipeline
