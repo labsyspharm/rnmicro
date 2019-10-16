@@ -60,12 +60,19 @@ def file_err_checking(samples,master_dir):
                 try:
                     glob.glob(master_dir + '/' + current + '/raw_files/*.rcpnl')
                 except:
-                    print('Uh Oh! Image' + current + 'does not have .rcpnl files')
+                    print('ERROR: Uh Oh! Image' + current + 'does not have .rcpnl files')
                     print('Must add your raw images!')
                     print('If your microscope does not output .rcpnl files, pipeline may work, but bug Nathan for not adding your favorite microscope')
 
+                try:
+                    glob.glob(master_dir + '/' + current + '/raw_files/*.metadata')
+                except:
+                    print('Uh Oh! Image' + current + 'does not have .metadata files')
+                    print('Its nice to add your raw images!')
+                    print('If your microscope does not output .rcpnl files, pipeline may work, but bug Nathan for not adding your favorite microscope')
+
             except:
-                print('Uh Oh! Image: ' + current + ' did not have the raw_files folder')
+                print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_files folder')
                 print('Within each image folder, there must be a raw_files folder containing the raw images and metadata for each cycle')
 
     except:
@@ -260,6 +267,7 @@ def save_cycif_pipeline(res):
 def save_module_versions():
     f = open('cycif_pipeline_versions.txt', 'w')
     with redirect_stdout(f):
+        print('Cycif Pipeline Version:', Version)
         print('Environment Versions:')
         # go through each environment in /environments/ and capture the environment modification time stamp to get 'version'
         environments = next(os.walk(''.join([O2_global_path + '/environments'])))[1]
