@@ -46,40 +46,44 @@ Version = 'v1.2'
 #3) checking if correct data exists in raw_files folder, 4) check if number of raw cycle number matches the marker names
 def file_err_checking(samples,master_dir):
     print('Checking If Data is organized correctly')
-    #does the user have markers.csv file
+
+    #check for marker.csv file present [TODO] update check to pull from yaml file for individual sample marker file
     try:
-        os.access(''.join([master_dir + '/markers.csv']),mode=0)
+        os.access(''.join([master_dir + '/markers.csv']), mode=0)
+        print('PASSED: markers.csv file present')
 
         # if markers.csv exist, test if raw_file exists for each sample
         for current in samples:
 
             #check if raw_files folder exists
             try:
+                print('PASSED: ' + current + ' raw files folder present')
                 os.makedirs(master_dir + '/' + current + '/raw_files',exist_ok=True)
 
+                #check if raw files are present
                 try:
                     glob.glob(master_dir + '/' + current + '/raw_files/*.rcpnl')
+                    print('PASSED: ' + current + ' raw images present')
                 except:
                     print('ERROR: Uh Oh! Image' + current + 'does not have .rcpnl files')
                     print('Must add your raw images!')
                     print('If your microscope does not output .rcpnl files, pipeline may work, but bug Nathan for not adding your favorite microscope')
 
+                #metadata is not essential (not sure why we need/want it)
                 try:
                     glob.glob(master_dir + '/' + current + '/raw_files/*.metadata')
                 except:
-                    print('Uh Oh! Image' + current + 'does not have .metadata files')
-                    print('Its nice to add your raw images!')
-                    print('If your microscope does not output .rcpnl files, pipeline may work, but bug Nathan for not adding your favorite microscope')
+                    print('Image' + current + 'does not have .metadata files')
+                    print('Customary but not necessary')
 
             except:
                 print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_files folder')
                 print('Within each image folder, there must be a raw_files folder containing the raw images and metadata for each cycle')
-
     except:
         print('ERROR, must have \'markers.csv\' file present in your project folder')
         print('File should contain a name for each cycle channel')
         print('Example:')
-        example=['DNA1','MARKER1','MARKER2','MARKER3','DNA2','MARKER4','MARKER5','MARKER6']
+        example = ['DNA1', 'MARKER1', 'MARKER2', 'MARKER3', 'DNA2', 'MARKER4', 'MARKER5', 'MARKER6']
         for i in example:
             print(i)
 
@@ -127,11 +131,13 @@ def pipeline_checking(master_dir,samples,pipeline):
             #calculate number of cycles to verify illumination was done on
             cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*.rcpnl'])))
 
-            #if number of cycles matches the number of expected illumination profiles then remove illumination from pipeline
-            if (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*-dfp.tif']))) == cycle_number) & (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*-ffp.tif']))) == cycle_number):
-                print(i + ' Illumination Files Found, skipping')
-                #pop off illumination check
-                pipeline = [n for n in pipeline if not ('illumination' in n)]
+            #Solve for false positives if raw image files are missing
+            if cycle_number != 0:
+                #if number of cycles matches the number of expected illumination profiles then remove illumination from pipeline
+                if (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*-dfp.tif']))) == cycle_number) & (len(glob.glob(''.join([master_dir + '/' + i + '/illumination_profiles/*-ffp.tif']))) == cycle_number):
+                    print(i + ' Illumination Files Found, skipping')
+                    #pop off illumination check
+                    pipeline = [n for n in pipeline if not ('illumination' in n)]
 
         # if stitcher ran /image/registration = (*.ome.tif)
         if os.access(''.join([master_dir + '/' + i + '/registration']), mode=0):
@@ -175,7 +181,8 @@ def pipeline_checking(master_dir,samples,pipeline):
                     pipeline = [n for n in pipeline if not ('feature_extractor' in n)]
 
             except:
-                print('markers.csv file does not exist')
+                #function file_err_checking checks for markers.csv file, otherwise it will print missing for each sample == redundant
+                #print('markers.csv file does not exist')
     return(pipeline)
 
 ######################
