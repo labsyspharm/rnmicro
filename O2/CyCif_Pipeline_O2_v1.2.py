@@ -48,38 +48,35 @@ def file_err_checking(samples,master_dir):
     print('Checking If Data is organized correctly')
 
     #check for marker.csv file present [TODO] update check to pull from yaml file for individual sample marker file
-    try:
-        os.access(''.join([master_dir + '/markers.csv']), mode=0)
+    if os.access(''.join([master_dir + '/markers.csv']), mode=0):
         print('PASSED: markers.csv file present')
 
         # if markers.csv exist, test if raw_file exists for each sample
         for current in samples:
 
             #check if raw_files folder exists
-            try:
+            if os.access(master_dir + '/' + current + '/raw_files',mode=0):
                 print('PASSED: ' + current + ' raw files folder present')
-                os.makedirs(master_dir + '/' + current + '/raw_files',exist_ok=True)
 
-                #check if raw files are present
-                try:
-                    glob.glob(master_dir + '/' + current + '/raw_files/*.rcpnl')
+                # check if raw files are present
+                if len(glob.glob(master_dir + '/' + current + '/raw_files/*.rcpnl')) >0:
                     print('PASSED: ' + current + ' raw images present')
-                except:
-                    print('ERROR: Uh Oh! Image' + current + 'does not have .rcpnl files')
+                else:
+                    print('ERROR: Uh Oh! Sample: ' + current + ' does not have .rcpnl files')
                     print('Must add your raw images!')
                     print('If your microscope does not output .rcpnl files, pipeline may work, but bug Nathan for not adding your favorite microscope')
 
-                #metadata is not essential (not sure why we need/want it)
-                try:
-                    glob.glob(master_dir + '/' + current + '/raw_files/*.metadata')
-                except:
-                    print('Image' + current + 'does not have .metadata files')
-                    print('Customary but not necessary')
+                #check if metadata files are present: metadata is not essential (not sure why we need/want it)
+                # if len(glob.glob(master_dir + '/' + current + '/raw_files/*.metadata')) > 0:
+                #     print('test')
+                # else:
+                #     print('Sample' + current + 'does not have .metadata files')
+                #     print('Customary but not necessary')
 
-            except:
+            else:
                 print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_files folder')
                 print('Within each image folder, there must be a raw_files folder containing the raw images and metadata for each cycle')
-    except:
+    else:
         print('ERROR, must have \'markers.csv\' file present in your project folder')
         print('File should contain a name for each cycle channel')
         print('Example:')
