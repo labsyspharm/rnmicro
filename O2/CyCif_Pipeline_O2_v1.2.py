@@ -183,6 +183,7 @@ def pipeline_checking(master_dir,samples,pipeline):
             except:
                 #function file_err_checking checks for markers.csv file, otherwise it will print missing for each sample == redundant
                 #print('markers.csv file does not exist')
+
     return(pipeline)
 
 ######################
