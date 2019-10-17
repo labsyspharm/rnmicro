@@ -83,6 +83,7 @@ if not test_sample.exists():
 
     input_files = ' '.join([str(f) for f in files_exp])
 
+    #[TODO] expose ashlar parameters to CyCif Pipeline program which then will be saved as a parameter log
     command = 'python ' + ashlar_path + ' ' + input_files + ' -m 30 -o ' + str(out_dir)
 
     #if text_to_bool(exp['Pyramid']): #[TODO] add to parameter yaml
@@ -93,7 +94,13 @@ if not test_sample.exists():
     dfps = ' '.join(dfp_list)
     command += ' --ffp ' + ffps + ' --dfp ' + dfps
 
-    # print(command)
+    #save the list order for rcpnl, ffp, and dfp
+    print([i for i in files_exp])
+    print([i for i in ffp_list])
+    print([i for i in dfp_list])
+
+    #save the command passed to ashlar
+    print(command)
     call(command, shell=True)
     print(datetime.datetime.now())
 else:
