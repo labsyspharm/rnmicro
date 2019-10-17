@@ -41,7 +41,7 @@ file_type = 'rcpnl'
 if len(files_exp) == 0:
     files_exp = sorted(raw_dir.glob('*xdce'))
     file_type = 'xdce'
-files_exp.sort(key=path_to_date)
+#files_exp.sort(key=path_to_date)
 
 if len(files_exp) == 0:
     print('No rcpnl or xdce files found in', str(raw_dir))
