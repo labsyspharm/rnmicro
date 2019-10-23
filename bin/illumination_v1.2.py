@@ -12,6 +12,7 @@ except ImportError:
 import sys
 import os
 import datetime
+import glob
 
 #functions
 def text_to_bool(text):

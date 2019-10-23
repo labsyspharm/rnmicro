@@ -10,6 +10,7 @@ import argparse
 import os
 import datetime
 import sys
+import glob
 
 #input from path
 ashlar_path = pathlib.Path(str(sys.argv[2]))
