@@ -144,3 +144,7 @@ for i in samples:
 
 #save results
 output.to_csv('CyCif_Run_Summary.csv',index=False)
+
+#cleanup directory system
+print('Cleaning Up')
+os.system('rm -r output')
