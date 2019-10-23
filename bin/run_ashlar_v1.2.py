@@ -12,8 +12,9 @@ import datetime
 import sys
 
 ashlar_path = pathlib.Path(str(sys.argv[2]))
-ashlar_path='/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar'
-
+ashlar_path ='/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar'
+raw_files   =  '*rcpnl'
+file_type   =   'rcpnl'
 
 #function
 def text_to_bool(text):
@@ -35,8 +36,8 @@ lambda_dark = '0.01'
 #path_exp = pathlib.Path('/'.join([str(sys.argv[1]),i]))
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
 raw_dir = path_exp / 'raw_files'
-files_exp = sorted(raw_dir.glob('*rcpnl'))
-file_type = 'rcpnl'
+files_exp = sorted(raw_dir.glob(raw_files))
+#file_type = 'rcpnl'
 #if len(files_exp) == 0:
 #    files_exp = sorted(raw_dir.glob('*xdce'))
 #    file_type = 'xdce'
