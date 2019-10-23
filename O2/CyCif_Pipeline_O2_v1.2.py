@@ -373,6 +373,7 @@ def update_parameters(file,part3,part4,part5,part6):
 
     #Feature Extractor [TODO]
     #part6.parameters = condition.get('Feature_Extractor')
+    return(condition)
 
 ################################
 #CyCIf Method Class Definitions#
@@ -864,7 +865,7 @@ if __name__ == '__main__':
         part6.sample = n
 
         #Parse Yaml File for parameters [TODO]
-        update_parameters(file,part3,part4,part5,part6)
+        condition=update_parameters(file,part3,part4,part5,part6)
 
         # # test if TMA run or not
         # if TMA_Test == 'True':
@@ -890,7 +891,7 @@ if __name__ == '__main__':
 
     #merge all sbatch jobs for the samples to be run into one file to be submitted to O2
     print('Integrating CyCif Pipeline')
-    master(samples,TMA_Test)
+    master(samples,condition.get('Run').get('TMA'))
 
     # change permissions to make file runable on linux
     os.system('chmod 755 Run_CyCif_pipeline.sh')
