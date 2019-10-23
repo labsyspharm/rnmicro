@@ -19,8 +19,8 @@ import re
 master_dir = os.path.normpath(sys.argv[1])
 
 #local testing
-master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data')
-os.chdir(master_dir)
+#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data')
+#os.chdir(master_dir)
 
 #grab all samples
 samples = next(os.walk(master_dir))[1]
