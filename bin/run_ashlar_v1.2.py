@@ -11,15 +11,9 @@ import os
 import datetime
 import sys
 
+#input from path
 ashlar_path = pathlib.Path(str(sys.argv[2]))
 ashlar_path ='/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar'
-
-#standard is rcpnl
-raw_files   =  '*rcpnl'
-file_type = 'rcpnl'
-#for exemplar
-#raw_files   =  '*ome.tiff'
-#file_type   =   'ome.tiff'
 
 #function
 def text_to_bool(text):
@@ -28,6 +22,18 @@ def text_to_bool(text):
         else str(text).lower() in '1,yes,y,true,t'
 def path_to_date(path):
     return os.path.getmtime(str(path))
+def microscope_check(current_sample):
+    if len(glob.glob(current_sample + '/raw_files/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = 'ome.tiff'
+        return(output)
+    if len(glob.glob(current_sample + '/raw_files/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
+    else:
+        output = 'notfound' #if neither found, still needs to return a string
+        return(output)
 
 #Possible Parameters to Expose #[TODO] add for Conditional parameter in yaml file
 #if text_to_bool(exp['Correction']):
@@ -40,8 +46,10 @@ lambda_dark = '0.01'
 #for i in ROI:
 #path_exp = pathlib.Path('/'.join([str(sys.argv[1]),i]))
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
+raw_file   =  ''.join(['*'  + microscope_check(path_exp)])
+file_type = microscope_check(path_exp)
 raw_dir = path_exp / 'raw_files'
-files_exp = sorted(raw_dir.glob(raw_files))
+files_exp = sorted(raw_dir.glob(raw_file))
 #file_type = 'rcpnl'
 #if len(files_exp) == 0:
 #    files_exp = sorted(raw_dir.glob('*xdce'))
@@ -58,8 +66,8 @@ ffp_list = []
 dfp_list = []
 for j in files_exp:
     # print('\r    ' + 'Generating ffp and dfp for ' + j.name)
-    ffp_file_name = j.name.replace('.' + file_type, '-ffp.tif')
-    dfp_file_name = j.name.replace('.' + file_type, '-dfp.tif')
+    ffp_file_name = j.name.replace(file_type, '-ffp.tif')
+    dfp_file_name = j.name.replace(file_type, '-dfp.tif')
     illumination_dir = path_exp / 'illumination_profiles'
     # if (path_exp / 'illumination_profiles' / ffp_file_name).exists() and (
     #         path_exp / 'illumination_profiles' / dfp_file_name).exists():

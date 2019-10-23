@@ -15,6 +15,21 @@ import pandas as pd
 import subprocess
 import re
 
+#expand the number of raw files types searched for
+#if RareCyte or Exemplar data not found, returns
+def microscope_check(current_sample,master_dir):
+    if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = 'ome.tiff'
+        return(output)
+    if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
+    else:
+        output = 'notfound' #if neither found, still needs to return a string
+        return(output)
+
 #input variables
 master_dir = os.path.normpath(sys.argv[1])
 
@@ -52,7 +67,7 @@ for i in samples:
     #CyCle Number
     if os.access(''.join([master_dir + '/' + i + '/raw_files']),mode=0):
         #Find the number of Cycles
-        Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*.rcpnl'])))
+        Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
     else:
         Cycle_Number = 'Fail'
 
