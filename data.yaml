@@ -1,0 +1,23 @@
+--- 
+Run:
+  Name: 'CyCif Example'
+  TMA: 'False'
+  cf25: 'False'
+QC:
+Illumination:
+Stitcher:
+  -m: 30 
+  --filter-sigma: 0
+Probability_Mapper:
+  dapi_channel: 0
+  hs_scaling: 1
+  vs_scaling: 1
+Segmenter:
+  HPC: 'true'
+  fileNum: 1
+  TissueMaskChan: '[2]'
+  logSigma: '[3 30]'
+  mask: 'tissue'
+  segmentCytoplasm: 'ignoreCytoplasm'
+Feature_Extractor:
+
