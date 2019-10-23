@@ -19,11 +19,11 @@ import re
 #if RareCyte or Exemplar data not found, returns
 def microscope_check(current_sample,master_dir):
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.ome.tiff')) != 0:
-        print('Exemplar Dataset Used')
+        #print('Exemplar Dataset Used')
         output = 'ome.tiff'
         return(output)
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.rcpnl')) != 0:
-        print('Rarecyte Microscope')
+        #print('Rarecyte Microscope')
         output = '.rcpnl'
         return(output)
     else:
@@ -32,10 +32,11 @@ def microscope_check(current_sample,master_dir):
 
 #input variables
 master_dir = os.path.normpath(sys.argv[1])
+os.chdir(master_dir)
 
 #local testing
 #master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data')
-#os.chdir(master_dir)
+#
 
 #grab all samples
 samples = next(os.walk(master_dir))[1]
@@ -58,6 +59,8 @@ else:
 
 #process summary per sample
 for i in samples:
+    print('Processing ' + i)
+
     # Project Name
     Project = master_dir.split('/')[-1]
 
