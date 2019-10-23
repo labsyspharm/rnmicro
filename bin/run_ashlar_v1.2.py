@@ -15,11 +15,11 @@ ashlar_path = pathlib.Path(str(sys.argv[2]))
 ashlar_path ='/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar'
 
 #standard is rcpnl
-#raw_files   =  '*rcpnl'
-#file_type = 'rcpnl'
+raw_files   =  '*rcpnl'
+file_type = 'rcpnl'
 #for exemplar
-raw_files   =  '*ome.tiff'
-file_type   =   'ome.tiff'
+#raw_files   =  '*ome.tiff'
+#file_type   =   'ome.tiff'
 
 #function
 def text_to_bool(text):
