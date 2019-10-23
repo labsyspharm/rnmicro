@@ -13,8 +13,13 @@ import sys
 
 ashlar_path = pathlib.Path(str(sys.argv[2]))
 ashlar_path ='/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar'
-raw_files   =  '*rcpnl'
-file_type   =   'rcpnl'
+
+#standard is rcpnl
+#raw_files   =  '*rcpnl'
+#file_type = 'rcpnl'
+#for exemplar
+raw_files   =  '*ome.tiff'
+file_type   =   'ome.tiff'
 
 #function
 def text_to_bool(text):
