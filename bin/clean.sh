@@ -1,17 +1,18 @@
 #script used for testing
 #purpose is to remove all files that are not the raw images and markes.csv
 echo 'Remove Job files'
-rm *.o
-rm *.e
-rm *.sh
-rm *.txt
+rm -f *.o
+rm -f *.e
+rm -f *.sh
+rm -f *.txt
 echo 'Remove folder structure except raw images'
-rm -r */cell_states  
-rm -r */clustering  
-rm -r */dearray  
-rm -r */feature_extraction  
-rm -r */illumination_profiles  
-rm -r */prob_maps  
-rm -r */registration
-rm -r */segmentation
+rm -fr */cell_states  
+rm -fr */clustering  
+rm -fr */dearray  
+rm -fr */feature_extraction  
+rm -fr */illumination_profiles  
+rm -fr */prob_maps  
+rm -fr */registration
+rm -fr */segmentation
+rm -fr output
 echo 'Cleaning Completed'
