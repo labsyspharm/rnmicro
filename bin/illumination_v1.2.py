@@ -36,11 +36,11 @@ lambda_dark = '0.01'
 #path_exp = pathlib.Path('/'.join([str(sys.argv[1]),i]))
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
 #standard is rcpnl
-#raw_files   =  '*rcpnl'
-#file_type = 'rcpnl'
+raw_files   =  '*rcpnl'
+file_type = 'rcpnl'
 #for exemplar
-raw_files   =  '*ome.tiff'
-file_type   =   'ome.tiff'
+#raw_files   =  '*ome.tiff'
+#file_type   =   'ome.tiff'
 
 raw_dir = path_exp / 'raw_files'
 files_exp = sorted(raw_dir.glob(raw_files))
