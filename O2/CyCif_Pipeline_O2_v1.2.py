@@ -99,7 +99,8 @@ def file_name_checking(samples,master_dir):
         to_process = [i.split('/')[-1] for i in to_process]
 
         #test if past test based on 4 tests
-         # default is Pass
+        test = 'Pass'
+        # default is Pass
         for n in to_process:
             if len(n.split('_')) == 4:
                 test = 'Pass'
