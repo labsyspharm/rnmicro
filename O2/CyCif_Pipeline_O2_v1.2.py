@@ -18,13 +18,14 @@ import re
 
 #handles path to data correctly
 master_dir = os.path.normpath(sys.argv[1])
+file = 'data.yaml'
 
 #TODO implement debugging mode
 #! for local testing
 #master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
 #TMA_Test = 'False'
 #cf25_test = 'False'
-file = 'data.yaml'
+
 #add condition if absent to make it False
 #TMA_Test = sys.argv[2] #'True' or blank (unless cf25 is to be used otherwise should be 'False')
 #cf25_test = sys.argv[3] # 'True' or blank
@@ -40,6 +41,22 @@ Version = 'v1.2'
 ################
 #Pipeline Tests#
 ################
+
+#expand the number of raw files types searched for
+#if RareCyte or Exemplar data not found, returns
+def microscope_check(current_sample,master_dir):
+    if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = '.ome.tiff'
+        return(output)
+    if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
+    else:
+        output = 'notfound' #if neither found, still needs to return a string
+        return(output)
+
 #commonly users incorrectly structure the folders for execution or missing files
 #input: list of samples and path to data
 #returns: error messages to warn user prior to running (doesn't stop user, just warns)
@@ -67,12 +84,11 @@ def file_err_checking(samples,master_dir):
             print('PASSED: ' + current + ' raw files folder present')
 
             # check if raw files are present
-            if len(glob.glob(master_dir + '/' + current + '/raw_files/*.rcpnl')) >0:
+            if len(glob.glob(master_dir + '/' + current + '/raw_files/*' + microscope_check(current,master_dir))) >0:
                 print('PASSED: ' + current + ' raw images present')
             else:
-                print('ERROR: Uh Oh! Sample: ' + current + ' does not have .rcpnl files')
-                print('Must add your raw images!')
-                print('If your microscope does not output .rcpnl files, pipeline may work, but bug Nathan for not adding your favorite microscope')
+                print('ERROR: Uh Oh! Sample: ' + current + ' does not have raw image files')
+                print('If your microscope is not a RareCyte or Exemplar Data, pipeline may work, but bug Nathan for not adding your favorite microscope')
 
             #check if metadata files are present: metadata is not essential (not sure why we need/want it)
             # if len(glob.glob(master_dir + '/' + current + '/raw_files/*.metadata')) > 0:
@@ -80,10 +96,9 @@ def file_err_checking(samples,master_dir):
             # else:
             #     print('Sample' + current + 'does not have .metadata files')
             #     print('Customary but not necessary')
-
         else:
             print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_files folder')
-            print('Within each image folder, there must be a raw_files folder containing the raw images and metadata for each cycle')
+            print('Within each image folder, there must be a raw_files folder containing the raw images for each cycle')
 
 # check if the file name has not been modified as order of image name is how the files are stitched together
 def file_name_checking(samples,master_dir):
@@ -94,7 +109,7 @@ def file_name_checking(samples,master_dir):
     for i in iter(files):
         print('Checking Image: ' + i)
         #find
-        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*.rcpnl']))
+        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)]))
         #remove path length
         to_process = [i.split('/')[-1] for i in to_process]
 
@@ -135,7 +150,7 @@ def pipeline_checking(master_dir,samples,pipeline):
             #print(i + ' Illumination Profile Folder Exists')
 
             #calculate number of cycles to verify illumination was done on
-            cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*.rcpnl'])))
+            cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
 
             #Solve for false positives if raw image files are missing
             if cycle_number != 0:
@@ -279,12 +294,7 @@ def save_cycif_pipeline(res):
         #Pipeline Summary Step
 
         #Using the end of each job depenceny stack, execute summary script that is dependent on those jobs finishing
-        print(''.join(['sbatch --dependency=afterok:',':'.join(summary_dependency_jobids)]),' --parsable ' + res[i + 1][0])
-
-
-
-
-
+        print(''.join(['jid' + str(current_jobID) + '$(sbatch --dependency=afterok:',':'.join(summary_dependency_jobids)]),' --parsable ' + res[i + 1][0] + ')')
 
         #tell User done submitting
         print ('echo Successfully submitted CyCif Pipeline')
@@ -367,6 +377,9 @@ def update_parameters(file,part3,part4,part5,part6):
 
     # test if cf25 run or not
     part3.cf25(condition.get('Run').get('cf25'))
+
+    #microscope check
+    #microscope_type = condition.get('Run').get('file_extension')
 
     #Update various module conditions using user supplied parameters
     #Stitcher [TODO]
