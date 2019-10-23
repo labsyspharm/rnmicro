@@ -22,7 +22,7 @@ V1.2.0 - TMA
 		- Check if cycles are stitched correctly (number of cells identified for each DNA channel should stay the same or decrease)
 		- Check if user correctly formatted folder structure 
 		- Check if resource requirements for O2 need to be changed
-		- Check if user modified raw cycle names and fix if they have
+		- Check if user modified raw cycle names and warn if they have
 		- Add image summary for different stages of pipeline
 	- Add summary file of pipeline progress
 	- Add summary of resources used	
