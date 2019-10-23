@@ -11,6 +11,7 @@ manual](https://labsyspharm.github.io/mcmicro/).
 
 # Versions
 V1.2.0 - TMA
+
 	- Added TMA functionality and executed as passing argument 
 	- Added pipeline will not re-run if parts of pipeline already run (ie if ashlar stitched present, start from there) 
 	- Added more code comments
