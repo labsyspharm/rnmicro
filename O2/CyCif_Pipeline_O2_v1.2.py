@@ -17,17 +17,18 @@ import subprocess
 import re
 
 #handles path to data correctly
-#[TODO] implement debugging mode
 master_dir = os.path.normpath(sys.argv[1])
-#add condition if absent to make it False
-TMA_Test = sys.argv[2] #'True' or blank (unless cf25 is to be used otherwise should be 'False')
-cf25_test = sys.argv[3] # 'True' or blank
-#os.chdir(master_dir)
 
+#TODO implement debugging mode
 #! for local testing
-#master_dir = os.path.normpath('/home/bionerd/Dana_Farber/CyCif/git/mcmicro/example_data/')
-#TMA_Test = 'True'
-#cf25_test = 'True'
+#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
+#TMA_Test = 'False'
+#cf25_test = 'False'
+file = 'data.yaml'
+#add condition if absent to make it False
+#TMA_Test = sys.argv[2] #'True' or blank (unless cf25 is to be used otherwise should be 'False')
+#cf25_test = sys.argv[3] # 'True' or blank
+os.chdir(master_dir)
 
 #! change O2 global path and cycif environment file each update
 O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
@@ -91,29 +92,30 @@ def file_name_checking(samples,master_dir):
 
     #rename files to ensure correct order
     for i in iter(files):
-        print('Checking Image:'+i)
+        print('Checking Image: ' + i)
         #find
-        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*']))
+        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/']))
         #remove path length
         to_process = [i.split('/')[-1] for i in to_process]
-        regex = re.compile(r"'Scan'[0-9]{8}'_'")  # remove any tif files do not have digits in them
-        regex = re.compile(r"'Scan'")
-        tif = [i for i in to_process if regex.search(i)]
 
-        'Scan'
-        'Date'
+        #test if past test based on 4 tests
+        test = 'Pass'  # default is Pass
+        if to_process[0].split('_')[0] != 'Scan': #first word should be Scan
+            test = 'Fail'
+        if to_process[0].split('_')[1].isdigit(): #second statement should be a Date
+            test = 'Fail'
+        if to_process[0].split('_')[2].isdigit(): #third statement should be a number
+            test = 'Fail'
+        if len(to_process[0].split('_')[3].split('x')) == 3: #fourth statement should be '01x4x00154', test is splitting by x == 3 splits
+            test = 'Fail'
 
-        Scan_20190612_164155_01x4x00154.metadata
-
-
-
-
-
-        for n in to_process:
-            rename = n.split('/')[-1].split('Scan_')[-1]
-            rename = master_dir + '/' + i + '/raw_files/' + rename
-            output = ''.join(['mv ' + n + ' ' + rename]) #execution
-            os.system(output)
+        #what to do if test fails or pass
+        if test == 'Fail':
+            print('ERROR: Raw File has been modified')
+            print('Suggest running \'Rename.py\'')
+            print('Will turn  HER2_BR_Cycle1_Scan_20190612_164155_01x4x00154.rcpnl into 20190612_164155_01x4x00154.rcpnl')
+        else:
+            print('Pass: ' + i + ' raw files not modified')
 
 #check if any module parts of pipeline have already been run
 #input: path to data, list of images, list of pipeline modules to run
@@ -189,13 +191,13 @@ def pipeline_checking(master_dir,samples,pipeline):
 #[TODO] change to image dependent pipeline stack (for now assume first sample image has the same images already ran)
 def populate_image_job_dependency(pipeline,samples,files):
     # list length of number of samples plus one to store the QC step
-    res = lst = [[] for _ in range(len(samples)+1)]
+    res = [[] for _ in range(len(samples)+2)]
 
     # for QC step
     res[0] = [i for i in files if pipeline[0] in i]
 
     #make list of lists for each sample and its processing stack to put together
-    for n in range(1,len(pipeline)):
+    for n in range(1,len(pipeline)-1): #do not include QC and Summary
 
         #grab all files to be run as part of each stage
         tmp = [i for i in files if pipeline[n] in i]
@@ -204,16 +206,18 @@ def populate_image_job_dependency(pipeline,samples,files):
         for z in range(0, len(tmp)):
 
             #error checking: if tripped most likely due to overlapping names so pipeline dependencies may be screwed up
-            #solution: check 'Run_CyCif_pipeline.sh' to see if the images are correctly formatted
-            #easy fix: change a sample name so the base name doesn't overlap
             #for example: image_1 vs image_1A = cause it to trip
+            #solution: file variable explicitly defining the pattern to be found should fix any solution
+            #currently: keep warning present in case there is an edge case not being considered
             if len([i for i in tmp if samples[z] in i]) != 1:
                 print('Sample length error! Check Run_CyCif_pipeline.sh for correct job dependency')
 
             #rearrange order of samples is consistent ie image 1 goes with all image 1 pipeline defined by variable samples
-            res[z + 1].append([i for i in tmp if samples[z] in i][0])
-            #res[i+1].append(tmp[i])
+            file = samples[z] + '_' + pipeline[n] + '.sh'
+            res[z + 1].append([i for i in tmp if file in i][0])
 
+    #end of pipeline processing script
+    res[-1] = [i for i in files if pipeline[-1] in i]
     return(res)
 
 #create 'Run_CyCif_pipeline.sh'
@@ -233,9 +237,10 @@ def save_cycif_pipeline(res):
         #initialize variables [todo] not sure why needed, but error thrown if not
         current_jobID = 1
         previous_job_id = 0
+        summary_dependency_jobids=[]
 
         #each step dependent on QC run, then a stack is made separated for each individual sample ID
-        for i in range(1,len(res)): #length to number of samples
+        for i in range(1,len(res)-1): #length to number of samples
             for n in range(0,len(res[i])): #length to number of processing steps for each individual sample
                 # if first image and first in processing stack, initialize jobIDs
                 #print("i:"+str(i)+" n:"+str(n)+ " current_jobID:"+str(current_jobID)+ " previous_job_id:"+str(previous_job_id)+('\n'))
@@ -259,6 +264,20 @@ def save_cycif_pipeline(res):
                     #update ids for place in stack
                     previous_job_id = current_jobID
                     current_jobID = current_jobID + 1
+
+                #job ids for the end of the job processing stack for each image
+                if n == len(res[i])-1:
+                    summary_dependency_jobids.append(''.join(['$jid' + str(previous_job_id)]))
+
+        #Pipeline Summary Step
+
+        #Using the end of each job depenceny stack, execute summary script that is dependent on those jobs finishing
+        print(''.join(['sbatch --dependency=afterok:',':'.join(summary_dependency_jobids)]),' --parsable ' + res[i + 1][0])
+
+
+
+
+
 
         #tell User done submitting
         print ('echo Successfully submitted CyCif Pipeline')
@@ -289,21 +308,21 @@ def save_module_versions():
 
 #master function that controls error checking, submission, organizing, creating 'Run_CyCif_Pipeline.sh' for cycif pipeline
 def master(samples,TMA_Test):
-    #look for all scripts to include in cycif pipeline
+    #look for all scripts to include in cycif pipelineA
     files = sorted(glob.glob('*.sh')) #check for miserror
 
     if TMA_Test == 'True':
         # Order of list is dependent on order of pipeline steps to be run [segmenter vs prob_mapper]
-        pipeline = ['QC', 'illumination', 'stitcher', 'segmenter', 'prob_mapper', 'feature_extractor']
+        pipeline = ['QC', 'illumination', 'stitcher', 'segmenter', 'prob_mapper', 'feature_extractor','Summary']
     else:
         # Order of list is dependent on order of pipeline steps to be run
-        pipeline = ['QC', 'illumination', 'stitcher', 'prob_mapper', 'segmenter', 'feature_extractor']
+        pipeline = ['QC', 'illumination', 'stitcher', 'prob_mapper', 'segmenter', 'feature_extractor','Summary']
 
     #error checking raw files are where they should be, markers.csv exists, and cycles matches markers.csv number
     file_err_checking(samples, master_dir)
 
     #checking raw_files names are correctly formatted
-    #file_name_checking(samples, master_dir)
+    file_name_checking(samples, master_dir)
 
     #update pipeline list to run based on what files are found to exist (not checking QC of images, just they are present)
     #check whether any parts of pipeline already run using the first image as a reference
@@ -317,6 +336,44 @@ def master(samples,TMA_Test):
     print('Saving Run_CyCif_pipeline.sh')
     save_cycif_pipeline(res)
 
+#parse user parameters to set, otherwise use default
+def yaml_parser(file):
+    with open(file) as f:
+        conditions = yaml.safe_load_all(f)
+        for module in conditions:
+            print('Parameters Parsed')
+            print(module)
+        return(module)
+
+#using yaml parser, update parameters
+def update_parameters(file,part3,part4,part5,part6):
+    #parse yaml file and store as dictionary
+    condition = yaml_parser(file)
+
+    #Global Run Conditions
+
+    #test for TMA run
+    if condition.get('Run').get('TMA') == 'True':
+        part4.TMA = 'Yes'
+        part5.TMA = 'Yes'
+        part6.TMA = 'Yes'
+
+    # test if cf25 run or not
+    part3.cf25(condition.get('Run').get('cf25'))
+
+    #Update various module conditions using user supplied parameters
+    #Stitcher [TODO]
+    #part3.parameters = condition.get('Stitcher')
+
+    #Probability Mapper [TODO]
+    #part4.parameters = condition.get('Probability_Mapper')
+
+    #Segmenter [TODO]
+    #part5.parameters = condition.get('Segmenter')
+
+    #Feature Extractor [TODO]
+    #part6.parameters = condition.get('Feature_Extractor')
+
 ################################
 #CyCIf Method Class Definitions#
 ################################
@@ -324,7 +381,6 @@ def master(samples,TMA_Test):
 #QC (at the moment just folder infrastructure checking) [TODO]
 class QC(object):
     directory = master_dir
-    executable_path = '../bin/check_folder_v1.py'
     #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/cycif_pipeline'
     environment = ''.join([O2_global_path+'environments/cycif_pipeline'])
     parameters = master_dir
@@ -336,10 +392,6 @@ class QC(object):
     # initilizing class and printing when done
     def __init__(self):
         print("Initialize QC Definition")
-
-    # what sbatch parameters to load in O2
-    def sbatch_def(self):
-        self.sbatch = sbatch_submission()
 
     # export the sbatch parameters saved
     def sbatch_exporter(self):
@@ -370,12 +422,10 @@ class QC(object):
         f.close()
 
 #Illumination Profiles (pre-req for ashlar)
-class Ilumination(object):
-    #environment = '/n/groups/lsp/cycif/CyCif_Manager/environments/ImageJ'
+class Illumination(object):
     environment = ''.join([O2_global_path+'environments/ImageJ'])
     directory = master_dir
     parameters = ''.join([O2_global_path + 'bin/illumination_' + Version + '.py'])
-    #parameters = '/n/groups/lsp/cycif/CyCif_Manager/bin/illumination_v1.py'
     modules = ['conda2/4.2.13']
     run = 'python '
     sbatch = ['-p short', '-t 0-12:00', '--mem=64G', '-J illumination',
@@ -490,9 +540,9 @@ class Probability_Mapper(object):
     run = 'No'
     environment = ''.join([O2_global_path + 'environments/unet'])
     directory = master_dir
-    parameters = [''.join([O2_global_path + 'bin/run_batchUNet2DtCycif_mcmicro.py']), 0, 1, 1]
+    run = ''.join(['python ' + O2_global_path + 'bin/run_batchUNet2DtCycif_mcmicro.py'])
+    parameters = [0,1,1]
     modules = ['gcc/6.2.0','cuda/9.0','conda2/4.2.13']
-    run = 'python'
     sbatch = ['-p gpu','-n 1','-c 12', '--gres=gpu:1','-t 0-12:00','--mem=64000',
               '-J prob_mapper','-o Step_4_probability_mapper.o','-e Step_4_probability_mapper.e']
     sample = 'NA'
@@ -528,11 +578,15 @@ class Probability_Mapper(object):
     def print_sbatch_file(self):
         if self.TMA == 'True':
             TMA_mode()
+        #expected parameters is an array, yaml file parsing creates dict
+        if isinstance(self.parameters, dict):
+            self.parameters = [v for v in self.parameters.values()]
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        print(self.run, self.parameters[0],self.directory+'/'+self.sample,self.parameters[1],self.parameters[2],self.parameters[3])
+        #print(self.run, self.parameters[0],self.directory+'/'+self.sample,self.parameters[1],self.parameters[2],self.parameters[3])
+        print(self.run, self.directory + '/' + self.sample, self.parameters[0], self.parameters[1],self.parameters[2])
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
@@ -554,8 +608,9 @@ class Segmenter(object):
     run = 'matlab -nodesktop -r '
     environment = ''.join([O2_global_path + 'environments/segmenter'])
     program = 'NA'
-    parameters =  ",'HPC','true','fileNum',1,'TissueMaskChan',[2],'logSigma',[3 30],'mask'," \
+    parameters =  "'HPC','true','fileNum',1,'TissueMaskChan',[2],'logSigma',[3 30],'mask'," \
                   "'tissue','segmentCytoplasm','ignoreCytoplasm')\""
+    #parameters = []
     sbatch = ['-p short', '-t 0-12:00', '-c 1','--mem=100G', '-J Step_5_segmenter', '-o Step_5_segmenter.o', '-e segmenter.e']
     sample = 'NA'
     TMA = 'NA'
@@ -613,10 +668,28 @@ class Segmenter(object):
     def print_sbatch_file(self):
         if self.TMA == 'True':
             TMA_mode()
+        #Setup YAML input [TODO]
+        # if isinstance(self.parameters, dict):
+        #     #turn into a list
+        #     self.parameters = [[k, v] for k, v in self.parameters.items()]
+        #     #turn 2d list into a string
+        #     self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)
+        #
+        #     update_parameters(file, part3, part4, part5, part6)
+        #     #modify dictionary to string array
+        #     part5.parameters = [[k, v] for k, v in part5.parameters.items()] #dict to 2d array
+        #     part5.parameters = ','.join(str(item) for innerlist in part5.parameters for item in innerlist) #2d array to 1d string array
+        #     # matlab only accepts strings with quotes but not arrays or ints
+        #     part5.parameters = part5.parameters.split(',') #remove quotes if int or array
+        #     part5.parameters = (', '.join('"' + item + '"' for item in part5.parameters))
+        #   ''.join([part5.run, part5.program, "'", part5.directory + '/', "'", ","])
+        #   print(*part5.parameters)
+        #   print('"%s"' % part5.parameters)
+
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
-        print(self.run,self.program,"'",self.directory+'/'+self.sample,"'",self.parameters,sep='')
+        print(self.run, self.program, "'", self.directory + '/' + self.sample, "',", self.parameters, sep='')
         self.post_run_cleanup()
 
     # save the sbatch job script
@@ -684,7 +757,9 @@ class feature_extractor(object):
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
-        #specific for histocat TODO: change to be yaml inputable
+        #change yaml dictionary to array
+        # or just a list of the list of key value pairs
+        #self.parameters = [[k, v] for k, v in self.parameters.items()]
         tmp = ''
         tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,"/registration'",","]))
         tmp = tmp.__add__(''.join(["'",self.sample,".ome.tif',"]))
@@ -711,6 +786,47 @@ class feature_extractor(object):
                 self.print_sbatch_file()
         f.close()
 
+#summary class for pipeline
+class Summary(object):
+    directory = master_dir
+    environment = ''.join([O2_global_path+'environments/cycif_pipeline'])
+    parameters = master_dir
+    modules = ['conda2/4.2.13']
+    run = ''.join(['python ' + O2_global_path + 'bin/Project_Run_Summary.py'])
+    sbatch = ['-p short', '-t 0-1:00', '-J Run_Summary', '-o Step_7_Project_Summary.o', '-e Step_7_Project_Summary.e']
+
+    # initilizing class and printing when done
+    def __init__(self):
+        print("Initialize Summary Definition")
+
+    # export the sbatch parameters saved
+    def sbatch_exporter(self):
+        for i in self.sbatch:
+            print('#SBATCH ', i)
+
+    # export the module parameters
+    def module_exporter(self):
+        for i in self.modules:
+            print('module load', i)
+
+    # print the sbatch job script
+    def print_sbatch_file(self):
+        print('#!/bin/bash')
+        self.sbatch_exporter()
+        self.module_exporter()
+        print('source activate ', self.environment)
+        print(self.run, self.parameters)
+        print('conda deactivate')
+        print('sleep 5') # wait for slurm to get the job status into its database
+        print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
+
+    # save the sbatch job script
+    def save_sbatch_file(self):
+        f = open('Summary.sh', 'w')
+        with redirect_stdout(f):
+            self.print_sbatch_file()
+        f.close()
+
 #run it
 if __name__ == '__main__':
     #output sbatch files to run for O2 for each component in pipeline
@@ -722,13 +838,13 @@ if __name__ == '__main__':
     part1=QC()
     part1.save_sbatch_file()
 
-    #for each sample create a pipeline structure for that sample
+    #for each sample create a pipeline sbatch script for each sample
     for n in samples:
         #log by sample
         print('Initializing for Sample:'+n)
 
         # Illumination
-        part2 = Ilumination()
+        part2 = Illumination()
         part2.sample = n
 
         # define stitcher & make sbatch file for task
@@ -747,14 +863,17 @@ if __name__ == '__main__':
         part6 = feature_extractor()
         part6.sample = n
 
-        # test if TMA run or not
-        if TMA_Test == 'True':
-            part4.TMA = 'Yes'
-            part5.TMA = 'Yes'
-            part6.TMA = 'Yes'
+        #Parse Yaml File for parameters [TODO]
+        update_parameters(file,part3,part4,part5,part6)
+
+        # # test if TMA run or not
+        # if TMA_Test == 'True':
+        #     part4.TMA = 'Yes'
+        #     part5.TMA = 'Yes'
+        #     part6.TMA = 'Yes'
 
         # test if cf25 run or not
-        part3.cf25(cf25_test)
+        #part3.cf25(cf25_test)
 
         #save sbatch files
         part2.save_sbatch_file()
@@ -764,6 +883,10 @@ if __name__ == '__main__':
         part6.save_sbatch_file()
 
         #output master run file to manage running cycif pipeline
+
+    # Summary
+    part7 = Summary()
+    part7.save_sbatch_file()
 
     #merge all sbatch jobs for the samples to be run into one file to be submitted to O2
     print('Integrating CyCif Pipeline')
