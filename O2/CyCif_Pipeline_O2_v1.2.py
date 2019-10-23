@@ -100,15 +100,18 @@ def file_name_checking(samples,master_dir):
 
         #test if past test based on 4 tests
         test = 'Pass'  # default is Pass
-        if to_process[0].split('_')[0] != 'Scan': #first word should be Scan
-            test = 'Fail'
-        if to_process[0].split('_')[1].isdigit(): #second statement should be a Date
-            test = 'Fail'
-        if to_process[0].split('_')[2].isdigit(): #third statement should be a number
-            test = 'Fail'
-        if len(to_process[0].split('_')[3].split('x')) == 3: #fourth statement should be '01x4x00154', test is splitting by x == 3 splits
-            test = 'Fail'
-
+        for i in to_process:
+            if len(i.split('_')) == 4:
+                if i.split('_')[0] != 'Scan': #first word should be Scan
+                    test = 'Fail'
+                if i.split('_')[1].isdigit(): #second statement should be a Date
+                    test = 'Fail'
+                if i.split('_')[2].isdigit(): #third statement should be a number
+                    test = 'Fail'
+                if i.split('_')[3].split('x')) == 3: #fourth statement should be '01x4x00154', test is splitting by x == 3 splits
+                    test = 'Fail'
+            else:
+                test = 'Fail'
         #what to do if test fails or pass
         if test == 'Fail':
             print('ERROR: Raw File has been modified')
