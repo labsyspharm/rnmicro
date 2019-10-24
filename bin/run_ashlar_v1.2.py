@@ -23,12 +23,13 @@ def text_to_bool(text):
         else str(text).lower() in '1,yes,y,true,t'
 def path_to_date(path):
     return os.path.getmtime(str(path))
+#expand the number of microscope raw files types searched for
 def microscope_check(current_sample):
-    if len(glob.glob(current_sample + '/raw_files/*.ome.tiff')) != 0:
+    if len(glob.glob(str(current_sample) + '/raw_files/*.ome.tiff')) != 0:
         print('Exemplar Dataset Used')
-        output = 'ome.tiff'
+        output = '.ome.tiff'
         return(output)
-    if len(glob.glob(current_sample + '/raw_files/*.rcpnl')) != 0:
+    if len(glob.glob(str(current_sample) + '/raw_files/*.rcpnl')) != 0:
         print('Rarecyte Microscope')
         output = '.rcpnl'
         return(output)
@@ -41,21 +42,12 @@ def microscope_check(current_sample):
 lambda_flat = '0.1'
 lambda_dark = '0.01'
 
-#define all directories
-#ROI = next(os.walk(sys.argv[1]))[1]
-
-#for i in ROI:
-#path_exp = pathlib.Path('/'.join([str(sys.argv[1]),i]))
+#global variables
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
 raw_file   =  ''.join(['*'  + microscope_check(path_exp)])
 file_type = microscope_check(path_exp)
 raw_dir = path_exp / 'raw_files'
 files_exp = sorted(raw_dir.glob(raw_file))
-#file_type = 'rcpnl'
-#if len(files_exp) == 0:
-#    files_exp = sorted(raw_dir.glob('*xdce'))
-#    file_type = 'xdce'
-#files_exp.sort(key=path_to_date)
 
 print('Processing files in', str(raw_dir))
 print(datetime.datetime.now())
