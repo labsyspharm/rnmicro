@@ -42,8 +42,7 @@ Version = 'v1.2'
 #Pipeline Tests#
 ################
 
-#expand the number of raw files types searched for
-#if RareCyte or Exemplar data not found, returns
+#expand the number of microscope raw files types searched for
 def microscope_check(current_sample,master_dir):
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.ome.tiff')) != 0:
         print('Exemplar Dataset Used')
@@ -231,8 +230,8 @@ def populate_image_job_dependency(pipeline,samples,files):
             #for example: image_1 vs image_1A = cause it to trip
             #solution: file variable explicitly defining the pattern to be found should fix any solution
             #currently: keep warning present in case there is an edge case not being considered
-            if len([i for i in tmp if samples[z] in i]) != 1:
-                print('Sample length error! Check Run_CyCif_pipeline.sh for correct job dependency')
+            #if len([i for i in tmp if samples[z] in i]) != 1:
+            #    print('Sample length error! Check Run_CyCif_pipeline.sh for correct job dependency')
 
             #rearrange order of samples is consistent ie image 1 goes with all image 1 pipeline defined by variable samples
             file = samples[z] + '_' + pipeline[n] + '.sh'
