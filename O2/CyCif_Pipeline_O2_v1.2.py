@@ -133,8 +133,9 @@ def file_name_checking(samples,master_dir):
         #what to do if test fails or pass
         if test == 'Fail':
             print('ERROR: Raw File has been modified')
-            print('Suggest running \'Rename.py\'')
-            print('Will turn  HER2_BR_Cycle1_Scan_20190612_164155_01x4x00154.rcpnl into 20190612_164155_01x4x00154.rcpnl')
+            print('Order of cycles depends on cycle file name')
+            #print('Suggest running \'Rename.py\'')
+            #print('Will turn  HER2_BR_Cycle1_Scan_20190612_164155_01x4x00154.rcpnl into 20190612_164155_01x4x00154.rcpnl')
         else:
             print('Pass: ' + i + ' raw files not modified')
 
