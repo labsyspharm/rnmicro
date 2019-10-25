@@ -388,7 +388,7 @@ def update_parameters(file,part3,part4,part5,part6):
     #part4.parameters = condition.get('Probability_Mapper')
 
     #Segmenter [TODO]
-    #part5.parameters = condition.get('Segmenter')
+    part5.parameters = condition.get('Segmenter')
 
     #Feature Extractor [TODO]
     #part6.parameters = condition.get('Feature_Extractor')
@@ -628,9 +628,9 @@ class Segmenter(object):
     run = 'matlab -nodesktop -r '
     environment = ''.join([O2_global_path + 'environments/segmenter'])
     program = 'NA'
-    parameters =  "'HPC','true','fileNum',1,'TissueMaskChan',[2],'logSigma',[3 30],'mask'," \
-                  "'tissue','segmentCytoplasm','ignoreCytoplasm')\""
-    #parameters = []
+    #parameters =  "'HPC','true','fileNum',1,'TissueMaskChan',[2],'logSigma',[3 30],'mask'," \
+    #              "'tissue','segmentCytoplasm','ignoreCytoplasm')\""
+    parameters = []
     sbatch = ['-p short', '-t 0-12:00', '-c 1','--mem=100G', '-J Step_5_segmenter', '-o Step_5_segmenter.o', '-e segmenter.e']
     sample = 'NA'
     TMA = 'NA'
@@ -695,17 +695,25 @@ class Segmenter(object):
         #     #turn 2d list into a string
         #     self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)
         #
-        #     update_parameters(file, part3, part4, part5, part6)
-        #     #modify dictionary to string array
-        #     part5.parameters = [[k, v] for k, v in part5.parameters.items()] #dict to 2d array
-        #     part5.parameters = ','.join(str(item) for innerlist in part5.parameters for item in innerlist) #2d array to 1d string array
-        #     # matlab only accepts strings with quotes but not arrays or ints
-        #     part5.parameters = part5.parameters.split(',') #remove quotes if int or array
-        #     part5.parameters = (', '.join('"' + item + '"' for item in part5.parameters))
-        #   ''.join([part5.run, part5.program, "'", part5.directory + '/', "'", ","])
-        #   print(*part5.parameters)
-        #   print('"%s"' % part5.parameters)
-
+        # update_parameters(file, part3, part4, part5, part6)
+        # #modify dictionary to string array
+        # part5.parameters = [[k, v] for k, v in part5.parameters.items()] #dict to 2d array
+        # part5.parameters = ','.join(str(item) for innerlist in part5.parameters for item in innerlist) #2d array to 1d string array
+        # part5.parameters = part5.parameters.split(',')  # retain individual elements for array
+        # # matlab only accepts strings with quotes but not arrays or ints
+        # print('\'%s\'' % part5.parameters)
+        #
+        #
+        # 
+        # print(%s,% part5.parameters)
+        # sys.stdout.write(part5.parameters)
+        #
+        #
+        # print(str(part5.parameters))
+        #
+        #
+        #
+        #
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
