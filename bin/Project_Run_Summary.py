@@ -134,11 +134,11 @@ for i in samples:
                            'Illumination': [Illumination],'Stitcher': [Stitcher],'Probability Maps': [Prob_Mapper],
                           'Segmentation': [Segmentation],'Feature Extraction': [Feature_Extraction]})
         output=df
-        print(i)
-        print(output)
+        #print(i)
+        #print(output)
     else:
-        print(i)
-        print(df)
+        #print(i)
+        #print(df)
         df = pd.DataFrame({'Project': [Project],'Sample': [Sample],'Number of Cycles': [Cycle_Number],
                            'Illumination': [Illumination],'Stitcher': [Stitcher],'Probability Maps': [Prob_Mapper],
                           'Segmentation': [Segmentation],'Feature Extraction': [Feature_Extraction]})
