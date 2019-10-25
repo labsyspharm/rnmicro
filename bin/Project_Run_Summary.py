@@ -36,15 +36,6 @@ os.chdir(master_dir)
 
 #local testing
 #master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data')
-#
-
-#grab all samples
-samples = next(os.walk(master_dir))[1]
-
-#check what files were generated across pipeline and generate summary
-#folders = ['Project', 'Sample','Number of Cycles','Illumination', 'Stitcher',
-#           'Probability Maps', 'Segmentation','Feature Extraction']
-#output = pd.DataFrame(columns=folders)
 
 #test for markers.csv file
 if os.access(''.join([master_dir + '/markers.csv']), mode=0):
@@ -56,6 +47,13 @@ else:
     example = ['DNA1', 'MARKER1', 'MARKER2', 'MARKER3', 'DNA2', 'MARKER4', 'MARKER5', 'MARKER6']
     for i in example:
         print(i)
+
+#cleanup directory system
+print('Cleaning Up')
+os.system('rm -r output')
+
+#grab all samples
+samples = next(os.walk(master_dir))[1]
 
 #process summary per sample
 for i in samples:
@@ -145,6 +143,3 @@ for i in samples:
 #save results
 output.to_csv('CyCif_Run_Summary.csv',index=False)
 
-#cleanup directory system
-print('Cleaning Up')
-os.system('rm -r output')
