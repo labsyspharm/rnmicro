@@ -689,36 +689,38 @@ class Segmenter(object):
         if self.TMA == 'True':
             TMA_mode()
         #Setup YAML input [TODO]
-        # if isinstance(self.parameters, dict):
+        if isinstance(self.parameters, dict):
+            self.parameters = [[k, v] for k, v in self.parameters.items()]  # dict to 2d array
+            self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)  # 2d array to 1d string array
+            self.parameters = self.parameters.split(',')  # retain individual elements for array
         #     #turn into a list
         #     self.parameters = [[k, v] for k, v in self.parameters.items()]
         #     #turn 2d list into a string
         #     self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)
         #
         # update_parameters(file, part3, part4, part5, part6)
-        # #modify dictionary to string array
+        #modify dictionary to string array
         # part5.parameters = [[k, v] for k, v in part5.parameters.items()] #dict to 2d array
         # part5.parameters = ','.join(str(item) for innerlist in part5.parameters for item in innerlist) #2d array to 1d string array
         # part5.parameters = part5.parameters.split(',')  # retain individual elements for array
-        # # matlab only accepts strings with quotes but not arrays or ints
+        # matlab only accepts strings with quotes but not arrays or ints
         # print('\'%s\'' % part5.parameters)
-        #
-        #
-        # 
-        # print(%s,% part5.parameters)
+        # print('%s' % str(part5.parameters)[1:-1])
+        # print('\'%s\'' % str(part5.parameters)[1:-1], ',', '%s' % str(tmp)[1:-1])
+        # print('\'%s\'' % str(part5.parameters)[[1:3][5:6]])
+        # print('%s' % str(part5.parameters)[1:-1])
+        # print('%s' % part5.parameters[1:-1])
         # sys.stdout.write(part5.parameters)
-        #
-        #
         # print(str(part5.parameters))
-        #
-        #
-        #
-        #
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
-        print(self.run, self.program, "'", self.directory + '/' + self.sample, "',", self.parameters, sep='')
+        print(part5.run, part5.program, "'", part5.directory + '/' + part5.sample, "',", str(part5.parameters)[1:-1],")\"", sep='')
+        #print(self.run, self.program, "'", self.directory + '/' + self.sample, "',", self.parameters, sep='')
         self.post_run_cleanup()
+        #print(part5.run, part5.program, "'", part5.directory + '/' + part5.sample, "',", str(part5.parameters)[1:-1],"')", sep='')
+        #two arrays = one string w/ quotes, other w/o quotes
+        #print(%s,% part5.parameters)
 
     # save the sbatch job script
     def save_sbatch_file(self):
