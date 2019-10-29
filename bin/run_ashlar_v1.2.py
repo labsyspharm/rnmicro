@@ -12,10 +12,6 @@ import datetime
 import sys
 import glob
 
-#input from path
-ashlar_path = pathlib.Path(str(sys.argv[2]))
-ashlar_path ='/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar'
-
 #function
 def text_to_bool(text):
     return False \
@@ -37,13 +33,18 @@ def microscope_check(current_sample):
         output = 'notfound' #if neither found, still needs to return a string
         return(output)
 
-#Possible Parameters to Expose #[TODO] add for Conditional parameter in yaml file
-#if text_to_bool(exp['Correction']):
-lambda_flat = '0.1'
-lambda_dark = '0.01'
+#local testing
+sys.argv=['tmp'] #local testing
+sys.argv.append(os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/image_1'))
+sys.argv.append('/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar')
+sys.argv.append(['-m','30','--filter-sigma','0'])
 
-#global variables
+#global variables from input
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
+ashlar_path = pathlib.Path(str(sys.argv[2]))
+parameters = sys.argv[3] #assumption is list
+
+# global variables
 raw_file   =  ''.join(['*'  + microscope_check(path_exp)])
 file_type = microscope_check(path_exp)
 raw_dir = path_exp / 'raw_files'
@@ -52,9 +53,7 @@ files_exp = sorted(raw_dir.glob(raw_file))
 print('Processing files in', str(raw_dir))
 print(datetime.datetime.now())
 print()
-#if text_to_bool(exp['Correction']):
-#lambda_flat = '0.1'
-#lambda_dark = '0.01'
+
 ffp_list = []
 dfp_list = []
 for j in files_exp:
@@ -62,19 +61,6 @@ for j in files_exp:
     ffp_file_name = j.name.replace(file_type, '-ffp.tif')
     dfp_file_name = j.name.replace(file_type, '-dfp.tif')
     illumination_dir = path_exp / 'illumination_profiles'
-    # if (path_exp / 'illumination_profiles' / ffp_file_name).exists() and (
-    #         path_exp / 'illumination_profiles' / dfp_file_name).exists():
-    #     print('\r        ' + ffp_file_name + ' already exists')
-    #     print('\r        ' + dfp_file_name + ' already exists')
-    # else:
-    #     if not illumination_dir.exists():
-    #         illumination_dir.mkdir()
-    #     call(
-    #         "/home/ajn16/softwares/Fiji.app/ImageJ-linux64 --ij2 --headless --run /home/ajn16/softwares/Fiji.app/plugins/imagej_basic_ashlar.py \"filename='%s', output_dir='%s', experiment_name='%s', lambda_flat=%s, lambda_dark=%s\"" % (
-    #         str(j), str(illumination_dir), j.name.replace('.' + file_type, ''), lambda_flat, lambda_dark),
-    #         shell=True)
-    #     print('\r        ' + ffp_file_name + ' generated')
-    #     print('\r        ' + dfp_file_name + ' generated')
     ffp_list.append(str(illumination_dir / ffp_file_name))
     dfp_list.append(str(illumination_dir / dfp_file_name))
 
@@ -90,8 +76,8 @@ if not test_sample.exists():
 
     input_files = ' '.join([str(f) for f in files_exp])
 
-    #[TODO] expose ashlar parameters to CyCif Pipeline program which then will be saved as a parameter log
-    command = 'python ' + ashlar_path + ' ' + input_files + ' -m 30 -o ' + str(out_dir)
+    #command for run
+    command = 'python ' + str(ashlar_path) + ' ' + input_files + ' ' + ' '.join(parameters) + ' -o ' + str(out_dir)
 
     #if text_to_bool(exp['Pyramid']): #[TODO] add to parameter yaml
     command += ' --pyramid -f ' + path_exp.name + '.ome.tif'
