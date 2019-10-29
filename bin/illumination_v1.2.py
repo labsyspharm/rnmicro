@@ -38,13 +38,17 @@ def microscope_check(current_sample):
         return(output)
 
 #define all inputs
-sys.argv=['tmp'] #local testing
-sys.argv.append(os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/image_1')) #local testing
+#sys.argv=['tmp'] #local testing
+#sys.argv.append(os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/image_1')) #local testing
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
 #dictionary of parameters
 sys.argv.append(str({'lambda_flat': 0.1, 'lambda_dark': 0.01, 'estimate_flat_field_only': False, 'max_number_of_fields_used': 'None'})) #local testing
 #passing a dictionary from command line
 parameters = eval(sys.argv[2])
+
+#Define what was found
+print('Data path:', path_exp)
+print('Parmeters:', parameters)
 
 #lambda_flat = '0.1'
 #lambda_dark = '0.01'
