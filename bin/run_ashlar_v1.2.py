@@ -34,10 +34,10 @@ def microscope_check(current_sample):
         return(output)
 
 #local testing
-sys.argv=['tmp'] #local testing
-sys.argv.append(os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/image_1'))
-sys.argv.append('/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar')
-sys.argv.append(['-m','30','--filter-sigma','0'])
+#sys.argv=['tmp'] #local testing
+#sys.argv.append(os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/image_1'))
+#sys.argv.append('/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/environments/ashlar/bin/ashlar')
+#sys.argv.append(['-m','30','--filter-sigma','0'])
 
 #global variables from input
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
