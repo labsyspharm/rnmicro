@@ -43,7 +43,7 @@ def microscope_check(current_sample):
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
 #dictionary of parameters
 #sys.argv.append({'lambda_flat': 0.1, 'lambda_dark': 0.01, 'estimate_flat_field_only': False, 'max_number_of_fields_used': 'None'}) #local testing
-parameters = sys.argv[2]
+parameters = dict(sys.argv[2])
 
 #lambda_flat = '0.1'
 #lambda_dark = '0.01'
