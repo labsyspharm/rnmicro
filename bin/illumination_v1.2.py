@@ -44,14 +44,17 @@ path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
 #dictionary of parameters
 #sys.argv.append(str({'lambda_flat': 0.1, 'lambda_dark': 0.01, 'estimate_flat_field_only': False, 'max_number_of_fields_used': 'None'})) #local testing
 
-#convert to list of parameters
-parameters = ''.join(sys.argv[2:])[1:-1].split(',')
-#dictionary conversion (even items are keys, odd items are values
+#convert command line argument to list
+parameters = ''.join(sys.argv[2:])[1:-1].split(':')
+parameters = ','.join(parameters).split(',')
+
+#dictionary conversion
 parameters = dict(zip(parameters[::2], parameters[1::2]))
 
 #Define what was found
 print('Data path:', path_exp)
 print('Parmeters:', parameters)
+print('Parameters passed: lambda flat:',parameters.get('lambda_flat'), 'lambda dark:',parameters.get('lambda_dark'))
 
 #lambda_flat = '0.1'
 #lambda_dark = '0.01'
