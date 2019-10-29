@@ -17,12 +17,12 @@ import subprocess
 import re
 
 #handles path to data correctly
-#master_dir = os.path.normpath(sys.argv[1])
+master_dir = os.path.normpath(sys.argv[1])
 file = 'data.yaml'
 
 #TODO implement debugging mode
 #! for local testing
-master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
+#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
 #TMA_Test = 'False'
 #cf25_test = 'False'
 
