@@ -37,15 +37,20 @@ def microscope_check(current_sample):
         output = 'notfound' #if neither found, still needs to return a string
         return(output)
 
-#Possible Parameters to Expose #[TODO] add for Conditional parameter in yaml file
-#if text_to_bool(exp['Correction']):
-lambda_flat = '0.1'
-lambda_dark = '0.01'
-
-#define all
-#local testing
-#sys.argv[1] = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/image_1')
+#define all inputs
+#sys.argv=['tmp'] #local testing
+#sys.argv.append(os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/image_1')) #local testing
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
+#dictionary of parameters
+#sys.argv.append({'lambda_flat': 0.1, 'lambda_dark': 0.01, 'estimate_flat_field_only': False, 'max_number_of_fields_used': 'None'}) #local testing
+parameters = sys.argv[2]
+
+
+#lambda_flat = '0.1'
+#lambda_dark = '0.01'
+#placeholder variables, not used at the moment
+#estimate_flat_field_only = 'False'
+#max_number_of_fields_used = 'None'
 
 #define raw file variable
 raw_file   =  ''.join(['*'  + microscope_check(path_exp)])
@@ -78,7 +83,7 @@ for j in files_exp:
             illumination_dir.mkdir()
         call(
             "/home/ajn16/softwares/Fiji.app/ImageJ-linux64 --ij2 --headless --run /home/ajn16/softwares/Fiji.app/plugins/imagej_basic_ashlar.py \"filename='%s', output_dir='%s', experiment_name='%s', lambda_flat=%s, lambda_dark=%s\"" % (
-            str(j), str(illumination_dir), j.name.replace(file_type, ''), lambda_flat, lambda_dark),
+            str(j), str(illumination_dir), j.name.replace(file_type, ''), parameters.get('lambda_flat'), parameters.get('lambda_dark')),
             shell=True)
         print('\r        ' + ffp_file_name + ' generated')
         print('\r        ' + dfp_file_name + ' generated')
