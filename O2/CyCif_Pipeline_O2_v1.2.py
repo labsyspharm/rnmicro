@@ -17,12 +17,12 @@ import subprocess
 import re
 
 #handles path to data correctly
-master_dir = os.path.normpath(sys.argv[1])
+#master_dir = os.path.normpath(sys.argv[1])
 file = 'data.yaml'
 
 #TODO implement debugging mode
 #! for local testing
-#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
+master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
 #TMA_Test = 'False'
 #cf25_test = 'False'
 
@@ -42,7 +42,7 @@ Version = 'v1.2'
 #Pipeline Tests#
 ################
 
-#expand the number of microscope raw files types searched for
+#expand the number of microscope raw files types searched for [TODO] add ability for user to modify extension searched for from yaml
 def microscope_check(current_sample,master_dir):
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.ome.tiff')) != 0:
         print('Exemplar Dataset Used')
@@ -381,17 +381,21 @@ def update_parameters(file,part3,part4,part5,part6):
     #microscope_type = condition.get('Run').get('file_extension')
 
     #Update various module conditions using user supplied parameters
-    #Stitcher [TODO]
-    #part3.parameters = condition.get('Stitcher')
+    #Illumination
+    part2.parameters = condition.get('Illumination')
 
-    #Probability Mapper [TODO]
-    #part4.parameters = condition.get('Probability_Mapper')
+    #Stitcher
+    part3.parameters = condition.get('Stitcher')
 
-    #Segmenter [TODO]
+    #Probability Mapper
+    part4.parameters = condition.get('Probability_Mapper')
+
+    #Segmenter
     part5.parameters = condition.get('Segmenter')
 
     #Feature Extractor [TODO]
     #part6.parameters = condition.get('Feature_Extractor')
+
     return(condition)
 
 ################################
@@ -445,9 +449,9 @@ class QC(object):
 class Illumination(object):
     environment = ''.join([O2_global_path+'environments/ImageJ'])
     directory = master_dir
-    parameters = ''.join([O2_global_path + 'bin/illumination_' + Version + '.py'])
+    parameters = {'lambda_flat': 0.1, 'lambda_dark': 0.01, 'estimate_flat_field_only': False, 'max_number_of_fields_used': 'None'} #default parameters
     modules = ['conda2/4.2.13']
-    run = 'python '
+    run = ''.join(['python ' + O2_global_path + 'bin/illumination_' + Version + '.py'])
     sbatch = ['-p short', '-t 0-12:00', '--mem=64G', '-J illumination',
               '-o Step_2_illumination.o', '-e Step_2_illumination.e']
     sample = 'NA'
@@ -481,7 +485,7 @@ class Illumination(object):
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        print(self.run, self.parameters, self.directory+'/'+self.sample)
+        print(self.run, self.directory+'/'+self.sample, self.parameters)
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
@@ -499,14 +503,15 @@ class Stitcher(object):
     method = 'Ashlar'
     TMA = 'No'
     environment = ''.join([O2_global_path + 'environments/ashlar'])
-    directory = master_dir
-    ashlar_path = ''.join([O2_global_path + 'bin/ashlar'])
     program = ''.join([O2_global_path + 'bin/run_ashlar_' + Version + '.py'])
+    directory = master_dir
+    ashlar_path = ''.join([O2_global_path + 'environments/ashlar/bin/ashlar'])
     modules = ['conda2/4.2.13']
     run = 'python'
     sbatch = ['-p short','-t 0-12:00', '--mem=64G', '-J ashlar',
               '-o Step_3_ashlar.o','-e Step_3_ashlar.e']
     sample = 'NA'
+    parameters = ['-m 30']
 
     #initilizing class and printing when done
     def __init__(self):
@@ -535,13 +540,59 @@ class Stitcher(object):
         for i in self.modules:
             print('module load',i)
 
+    #YAML Parser
+    def segmenter_yaml_parser(self):
+        #test that parameters have been parsed with yaml
+        if isinstance(self.parameters, dict):
+            #convert to data type desired
+            self.parameters = [[k, v] for k, v in self.parameters.items()]  # dict to 2d array
+            self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)  # 2d array to 1d string array
+            self.parameters = self.parameters.split(',')  # retain individual elements for array
+
+            #change any 'True' to 'true' as required by S3 requirments
+            self.parameters = ['true' if i == 'True' else i for i in self.parameters]
+
+            #modify parameter list to correctly handle integars, single and multiple digit arrays to match what matlab expects
+            #assumption is any element in array not a string has already been modified
+            for i in range(0,len(self.parameters)):
+                #print(self.parameters[i])
+
+                #assumption is any element in array not a string has already been modified
+                if isinstance(self.parameters[i],str):
+                    # testing if single integer
+                    if self.parameters[i].isdigit():
+                        #print('Digit')
+                        self.parameters[i] = int(self.parameters[i])
+
+                # assumption is any element in array not a string has already been modified
+                if isinstance(self.parameters[i],str):
+                    # testing for single digit list
+                    pattern = r'\[(\d+)'
+                    if re.search(pattern, self.parameters[i]):
+                        #print('Single Digit List')
+                        # remove brackets and convert to single digit list
+                        self.parameters[i] = [int(self.parameters[i][1:-1])]
+
+                # assumption is any element in array not a string has already been modified
+                if isinstance(self.parameters[i], str):
+                    #test for multiple digit array
+                    pattern = r'\[\'(\d+)'
+                    if re.search(pattern, self.parameters[i]):
+                        #print('Multiple Digit Array')
+                        # remove brackets and extra quotes and convert to multiple digit list
+                        self.parameters[i] = [int(i) for i in self.parameters[7][2:-2].split(' ')]
+
     #print the sbatch job script
     def print_sbatch_file(self):
+
+        #update parameters for command line input
+        self.segmenter_yaml_parser()
+
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        print(self.run, self.program, self.directory+'/'+self.sample, self.ashlar_path)
+        print(self.run, self.program, self.directory+'/'+self.sample, self.ashlar_path, self.parameters)
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
@@ -605,7 +656,6 @@ class Probability_Mapper(object):
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        #print(self.run, self.parameters[0],self.directory+'/'+self.sample,self.parameters[1],self.parameters[2],self.parameters[3])
         print(self.run, self.directory + '/' + self.sample, self.parameters[0], self.parameters[1],self.parameters[2])
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
@@ -684,43 +734,68 @@ class Segmenter(object):
     def file_finder(self):
         self.files=next(os.walk(self.directory))[1]
 
-    #print the sbatch job script
-    def print_sbatch_file(self):
-        if self.TMA == 'True':
-            TMA_mode()
-        #Setup YAML input [TODO]
+    #YAML Parser
+    def segmenter_yaml_parser(self):
+        #test that parameters have been parsed with yaml
         if isinstance(self.parameters, dict):
+            #convert to data type desired
             self.parameters = [[k, v] for k, v in self.parameters.items()]  # dict to 2d array
             self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)  # 2d array to 1d string array
             self.parameters = self.parameters.split(',')  # retain individual elements for array
-        #     #turn into a list
-        #     self.parameters = [[k, v] for k, v in self.parameters.items()]
-        #     #turn 2d list into a string
-        #     self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)
-        #
-        # update_parameters(file, part3, part4, part5, part6)
-        #modify dictionary to string array
-        # part5.parameters = [[k, v] for k, v in part5.parameters.items()] #dict to 2d array
-        # part5.parameters = ','.join(str(item) for innerlist in part5.parameters for item in innerlist) #2d array to 1d string array
-        # part5.parameters = part5.parameters.split(',')  # retain individual elements for array
-        # matlab only accepts strings with quotes but not arrays or ints
-        # print('\'%s\'' % part5.parameters)
-        # print('%s' % str(part5.parameters)[1:-1])
-        # print('\'%s\'' % str(part5.parameters)[1:-1], ',', '%s' % str(tmp)[1:-1])
-        # print('\'%s\'' % str(part5.parameters)[[1:3][5:6]])
-        # print('%s' % str(part5.parameters)[1:-1])
-        # print('%s' % part5.parameters[1:-1])
-        # sys.stdout.write(part5.parameters)
-        # print(str(part5.parameters))
+
+            #change any 'True' to 'true' as required by S3 requirments
+            self.parameters = ['true' if i == 'True' else i for i in self.parameters]
+
+            #modify parameter list to correctly handle integars, single and multiple digit arrays to match what matlab expects
+            #assumption is any element in array not a string has already been modified
+            for i in range(0,len(self.parameters)):
+                #print(self.parameters[i])
+
+                #assumption is any element in array not a string has already been modified
+                if isinstance(self.parameters[i],str):
+                    # testing if single integer
+                    if self.parameters[i].isdigit():
+                        #print('Digit')
+                        self.parameters[i] = int(self.parameters[i])
+
+                # assumption is any element in array not a string has already been modified
+                if isinstance(self.parameters[i],str):
+                    # testing for single digit list
+                    pattern = r'\[(\d+)'
+                    if re.search(pattern, self.parameters[i]):
+                        #print('Single Digit List')
+                        # remove brackets and convert to single digit list
+                        self.parameters[i] = [int(self.parameters[i][1:-1])]
+
+                # assumption is any element in array not a string has already been modified
+                if isinstance(self.parameters[i], str):
+                    #test for multiple digit array
+                    pattern = r'\[\'(\d+)'
+                    if re.search(pattern, self.parameters[i]):
+                        #print('Multiple Digit Array')
+                        # remove brackets and extra quotes and convert to multiple digit list
+                        self.parameters[i] = [int(i) for i in self.parameters[7][2:-2].split(' ')]
+
+    #print the sbatch job script
+    def print_sbatch_file(self):
+        if self.TMA == 'True':
+            self.TMA_mode()
+        #If YAML parser has been run, modify input parameters
+        if isinstance(self.parameters, dict):
+            self.segmenter_yaml_parser()
+            #self.parameters = [[k, v] for k, v in self.parameters.items()]  # dict to 2d array
+            #self.parameters = ','.join(str(item) for innerlist in self.parameters for item in innerlist)  # 2d array to 1d string array
+            #self.parameters = self.parameters.split(',')  # retain individual elements for array
         print('#!/bin/bash')
+        #O2 computational requirements
         self.sbatch_exporter()
+        #what O2 needs to load
         self.module_exporter()
-        print(part5.run, part5.program, "'", part5.directory + '/' + part5.sample, "',", str(part5.parameters)[1:-1],")\"", sep='')
-        #print(self.run, self.program, "'", self.directory + '/' + self.sample, "',", self.parameters, sep='')
+        #S3 segmenter headless matlab run
+        print(self.run, self.program, "'", self.directory + '/' + self.sample, "',", str(self.parameters)[1:-1], ")\"",
+              sep='')
+        #what folders and files need to be moved and cleaned up
         self.post_run_cleanup()
-        #print(part5.run, part5.program, "'", part5.directory + '/' + part5.sample, "',", str(part5.parameters)[1:-1],"')", sep='')
-        #two arrays = one string w/ quotes, other w/o quotes
-        #print(%s,% part5.parameters)
 
     # save the sbatch job script
     def save_sbatch_file(self):
@@ -873,46 +948,35 @@ if __name__ == '__main__':
         #log by sample
         print('Initializing for Sample:'+n)
 
-        # Illumination
+        # Define Illumination
         part2 = Illumination()
         part2.sample = n
 
-        # define stitcher & make sbatch file for task
+        # Define stitcher & update sample name
         part3 = Stitcher()
         part3.sample = n
 
-        # define probability mapper
+        # Define probability mapper
         part4 = Probability_Mapper()
         part4.sample = n
 
-        # define segmenter
+        # Define segmenter
         part5 = Segmenter()
         part5.sample = n
 
-        # define histocat
+        # Define histocat
         part6 = feature_extractor()
         part6.sample = n
 
-        #Parse Yaml File for parameters [TODO]
+        #Parse Yaml File for parameters
         condition=update_parameters(file,part3,part4,part5,part6)
 
-        # # test if TMA run or not
-        # if TMA_Test == 'True':
-        #     part4.TMA = 'Yes'
-        #     part5.TMA = 'Yes'
-        #     part6.TMA = 'Yes'
-
-        # test if cf25 run or not
-        #part3.cf25(cf25_test)
-
-        #save sbatch files
+        #Save sbatch files
         part2.save_sbatch_file()
         part3.save_sbatch_file()
         part4.save_sbatch_file()
         part5.save_sbatch_file()
         part6.save_sbatch_file()
-
-        #output master run file to manage running cycif pipeline
 
     # Summary
     part7 = Summary()
