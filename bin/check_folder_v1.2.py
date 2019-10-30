@@ -14,6 +14,8 @@ import sys
 
 #grab all folders within systems argument
 samples = next(os.walk(sys.argv[1]))[1]
+# log folder is where run logs are stored, exclude from folder to execute
+samples = [n for n in samples if not ('log' in n)]
 
 # Create/check the desired folder structure for future pipeline steps
 folders_to_make = ['dearray/masks','prob_maps','segmentation','feature_extraction',
