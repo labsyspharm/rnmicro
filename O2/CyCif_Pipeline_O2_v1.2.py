@@ -368,13 +368,13 @@ def update_parameters(file,part3,part4,part5,part6):
     #Global Run Conditions
 
     #test for TMA run
-    if condition.get('Run').get('TMA') == 'True':
+    if str(condition.get('Run').get('TMA')) == 'True':
         part4.TMA = 'Yes'
         part5.TMA = 'Yes'
         part6.TMA = 'Yes'
 
     # test if cf25 run or not
-    part3.cf25(condition.get('Run').get('cf25'))
+    part3.cf25(str(condition.get('Run').get('cf25')))
 
     #microscope check
     #microscope_type = condition.get('Run').get('file_extension')
@@ -393,7 +393,7 @@ def update_parameters(file,part3,part4,part5,part6):
     part5.parameters = condition.get('Segmenter')
 
     #Feature Extractor [TODO]
-    #part6.parameters = condition.get('Feature_Extractor')
+    part6.parameters = condition.get('Feature_Extractor')
 
     return(condition)
 
@@ -856,8 +856,18 @@ class feature_extractor(object):
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
 
+    #modify parameters in particular to HistoCat exepected input
+    def segmenter_yaml_parser(self):
+            #python will change yes and no to True/False automatically
+            if str(part6.parameters.get('neighborhood')) == 'False':
+                self.parameters['neighborhood'] = 'no'
+            if str(part6.parameters.get('neighborhood')) == 'True':
+                self.parameters['neighborhood'] = 'yes'
+
     #print the sbatch job script
     def print_sbatch_file(self):
+        #change parameters based on HistoCat specific conditions
+        self.segmenter_yaml_parser()
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
@@ -868,7 +878,7 @@ class feature_extractor(object):
         tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,"/registration'",","]))
         tmp = tmp.__add__(''.join(["'",self.sample,".ome.tif',"]))
         tmp = tmp.__add__(''.join(["'",self.directory,"/",self.sample,'/segmentation/',"',"]))
-        tmp = tmp.__add__(''.join(["'cellMask.tif'",",'",self.directory,"/","markers.csv'",",","'",self.parameters[0] ,"'",",","'",self.parameters[1] ,"')\""]))
+        tmp = tmp.__add__(''.join(["'",str(part6.parameters.get('mask')),"','",self.directory,"/","markers.csv'",",","'",str(part6.parameters.get('expansionpixels')) ,"'",",","'",str(part6.parameters.get('neighborhood')),"')\""]))
         print(self.run,self.program,tmp,sep='')
         print("mv",''.join(['./output/',self.sample,'/*']),''.join([self.directory,'/',self.sample,'/feature_extraction']))
         print("rm -r ",''.join(['./output/',self.sample]))
@@ -987,7 +997,7 @@ if __name__ == '__main__':
 
     #merge all sbatch jobs for the samples to be run into one file to be submitted to O2
     print('Integrating CyCif Pipeline')
-    master(samples,condition.get('Run').get('TMA'))
+    master(samples,str(condition.get('Run').get('TMA')))
 
     # change permissions to make file runable on linux
     os.system('chmod 755 Run_CyCif_pipeline.sh')
