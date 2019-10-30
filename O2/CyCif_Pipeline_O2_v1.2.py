@@ -71,6 +71,7 @@ def file_err_checking(samples,master_dir):
 
     # test if raw_file folder and raw files exists for each sample
     for current in samples:
+        print('Checking Folders for Image:',current)
 
         #check if raw_files folder exists
         if os.access(master_dir + '/' + current + '/raw_files',mode=0):
