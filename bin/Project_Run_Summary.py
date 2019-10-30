@@ -163,7 +163,7 @@ for i in samples:
 
             # if files exist, remove feature extracto from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)+1):
-                if os.access(''.join([master_dir + '/' + i + '.csv']), mode=0):
+                if os.access(''.join([master_dir + '/feature_extraction/' + i + '.csv']), mode=0):
                     Feature_Extraction = 'Pass'
                 else:
                     Feature_Extraction = 'Fail: Final csv file not found'
