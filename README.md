@@ -21,13 +21,11 @@ V1.2.0 - TMA & YAML parsing
 	- Added ability to update if new versions from developers
 	- Added ability to use ashlar version cf25 for older images
 	- Added varying QC checks to pipeline
-		- Check if cycles are stitched correctly (number of cells identified for each DNA channel should stay the same or decrease)
 		- Check if user correctly formatted folder structure 
-		- Check if resource requirements for O2 need to be changed
 		- Check if user modified raw cycle names and warn if they have
-		- Add image summary for different stages of pipeline
 		- Add ability to switch between RareCyte and Exemplar Data
 	- Added summary file of what parts of pipeline progress for each image
+	- Added storing run log files into separate folder based on yaml run name (if same name, appends time stamp)
 
 V1.1.0 - Parallelization
 
