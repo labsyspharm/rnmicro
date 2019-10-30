@@ -96,9 +96,6 @@ os.system(command)
 command = ''.join(['cp data.yaml ' + log_name])
 os.system(command)
 
-command = ''.join(['mv CyCif_Run_Summary.csv ' + log_name])
-os.system(command)
-
 #grab all samples
 samples = next(os.walk(master_dir))[1]
 # log folder is where run logs are stored, exclude from folder to execute
@@ -196,3 +193,6 @@ for i in samples:
 #save results
 output.to_csv('CyCif_Run_Summary.csv',index=False)
 
+#move results to log folder
+command = ''.join(['mv CyCif_Run_Summary.csv ' + log_name])
+os.system(command)
