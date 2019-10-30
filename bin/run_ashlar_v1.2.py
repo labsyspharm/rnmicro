@@ -42,7 +42,11 @@ def microscope_check(current_sample):
 #global variables from input
 path_exp = pathlib.Path('/'.join([str(sys.argv[1])]))
 ashlar_path = pathlib.Path(str(sys.argv[2]))
-parameters = eval(str(sys.argv[3])) #converting string to list (assumption is list to begin with)
+#parameters = eval(str(sys.argv[3])) #converting string to list (assumption is list to begin with)
+parameters = ''.join(sys.argv[3:])
+parameters = parameters[1:-1].split(',')
+
+
 
 print('Data Path passed:',path_exp)
 print('Ashlar Path passed:',ashlar_path)
