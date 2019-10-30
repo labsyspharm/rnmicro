@@ -289,7 +289,10 @@ def save_cycif_pipeline(res):
         #Pipeline Summary Step
 
         #Using the end of each job depenceny stack, execute summary script that is dependent on those jobs finishing
-        print(''.join(['jid' + str(current_jobID) + '=$(sbatch --dependency=afterok:',':'.join(summary_dependency_jobids)]),' --parsable ' + res[i + 1][0] + ')')
+        if len(summary_dependency_jobids) != 0:
+            print(''.join(['jid' + str(current_jobID) + '=$(sbatch --dependency=afterok:',':'.join(summary_dependency_jobids)]),' --parsable ' + res[i + 1][0] + ')')
+        else: #no job dependencies due to pipeline successfully run
+            print(''.join(['jid' + str(current_jobID) + '=$(sbatch --parsable ' + res[i + 1][0] + ')']))
 
         #tell User done submitting
         print ('echo Successfully submitted CyCif Pipeline')
