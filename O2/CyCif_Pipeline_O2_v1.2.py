@@ -182,15 +182,14 @@ def pipeline_checking(master_dir,samples,pipeline):
                 #pop off segmenter
                 pipeline = [n for n in pipeline if not ('segmenter' in n)]
 
-        print(''.join([master_dir + '/' + i + '/feature_extraction']))
         #if feature_extractor ran image_1 / feature_extraction = Cell_image_1*.mat == length of markers.csv
         if os.access(''.join([master_dir + '/' + i + '/feature_extraction']), mode=0):
-            print(i + ' Feature Extraction Folder Found')
+            #print(i + ' Feature Extraction Folder Found')
 
             # function file_err_checking checks for markers.csv file, otherwise it will print missing for each sample == redundant
             if os.access(''.join([master_dir + '/markers.csv']), mode=0):
-                markers = pd.read_csv(''.join([master_dir + '/markers.csv']))
-                print('Marker File length:',markers)
+                markers = pd.read_csv(''.join([master_dir + '/markers.csv']),header = None)
+                #print('Marker File length:',len(markers))
 
                 # if files exist, remove feature extractor from pipeline
                 if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)):
