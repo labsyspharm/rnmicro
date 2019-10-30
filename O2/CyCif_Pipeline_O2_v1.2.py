@@ -96,10 +96,10 @@ def file_err_checking(samples,master_dir):
 # check if the file name has not been modified as order of image name is how the files are stitched together
 def file_name_checking(samples,master_dir):
     print('Checking if Raw File Names Have Been Modified (Assuming RareCyte)')
-    files = next(os.walk(master_dir))[1]
+    #files = next(os.walk(master_dir))[1]
 
     #rename files to ensure correct order
-    for i in iter(files):
+    for i in iter(samples):
         print('Checking Image: ' + i)
         #find
         to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)]))
