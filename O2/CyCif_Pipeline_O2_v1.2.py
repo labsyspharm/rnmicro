@@ -773,7 +773,7 @@ class Segmenter(object):
                     if re.search(pattern, self.parameters[i]):
                         #print('Multiple Digit Array')
                         # remove brackets and extra quotes and convert to multiple digit list
-                        self.parameters[i] = [int(i) for i in self.parameters[7][2:-2].split(' ')]
+                        self.parameters[i] = [int(i) for i in self.parameters[i][2:-2].split(' ')]
 
     #print the sbatch job script
     def print_sbatch_file(self):
