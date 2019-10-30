@@ -182,7 +182,8 @@ def pipeline_checking(master_dir,samples,pipeline):
                 #pop off segmenter
                 pipeline = [n for n in pipeline if not ('segmenter' in n)]
 
-        #if feature_extractor ran image_1 / feature_extraction = Cell_image_1*.mat == length of markers.csv & sample_name.csv
+        print(''.join([master_dir + '/' + i + '/feature_extraction']))
+        #if feature_extractor ran image_1 / feature_extraction = Cell_image_1*.mat == length of markers.csv
         if os.access(''.join([master_dir + '/' + i + '/feature_extraction']), mode=0):
             print(i + ' Feature Extraction Folder Found')
 
