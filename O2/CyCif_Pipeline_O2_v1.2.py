@@ -193,7 +193,7 @@ def pipeline_checking(master_dir,samples,pipeline):
 
                 # if files exist, remove feature extractor from pipeline
                 if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)):
-                    print(i + 'Feature Extractor run previously, skipping')
+                    print(i + ' Feature Extractor run previously, skipping')
                     # pop off feature extractor
                     pipeline = [n for n in pipeline if not ('feature_extractor' in n)]
 
