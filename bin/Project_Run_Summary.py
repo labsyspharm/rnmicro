@@ -14,6 +14,7 @@ import glob
 import pandas as pd
 import subprocess
 import re
+import time
 
 #expand the number of raw files types searched for
 #if RareCyte or Exemplar data not found, returns
@@ -32,6 +33,7 @@ def microscope_check(current_sample,master_dir):
 
 #input variables
 master_dir = os.path.normpath(sys.argv[1])
+run_name = ''.join(sys.argv[2:])
 os.chdir(master_dir)
 
 #local testing
@@ -50,10 +52,58 @@ else:
 
 #cleanup directory system
 print('Cleaning Up')
-os.system('rm -r output')
+os.system('rm -fr output') #let over from HistoCat
+
+#store log files and stored analysis run
+print('Making Log Folder')
+#log folder
+try:
+    os.makedirs('log')
+except:
+    print('Log Folder Exists')
+
+#make project based folder
+log_name = 'log' + '/' + str(run_name)
+try:
+    os.makedirs(log_name)
+except:
+    print('Another mcmicro run with same name already exists, making alternative folder')
+    os.makedirs(log_name + '.' + time.time())
+    log_name = log_name + '.' + time.time()
+
+#store log files
+command = ''join(['mv CyCif_Pipeline_log.txt ' + log_name])
+os.system(command)
+
+command = ''join(['mv cycif_pipeline_versions.txt ' + log_name])
+os.system(command)
+
+command = ''join(['mv Run_CyCif_pipeline.sh ' + log_name])
+os.system(command)
+
+command = ''join(['mv *.e ' + log_name])
+os.system(command)
+
+command = ''join(['mv *.o ' + log_name])
+os.system(command)
+
+command = ''join(['mv *.sh ' + log_name])
+os.system(command)
+
+command = ''join(['cp markers.csv ' + log_name])
+os.system(command)
+
+command = ''join(['cp data.yaml ' + log_name])
+os.system(command)
+
+command = ''join(['mv CyCif_Run_Summary.csv ' + log_name])
+os.system(command)
 
 #grab all samples
 samples = next(os.walk(master_dir))[1]
+# log folder is where run logs are stored, exclude from folder to execute
+samples = [n for n in samples if not ('log' in n)]
+
 
 #process summary per sample
 for i in samples:

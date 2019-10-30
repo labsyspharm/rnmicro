@@ -23,12 +23,6 @@ file = 'data.yaml'
 #TODO implement debugging mode
 #! for local testing
 #master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
-#TMA_Test = 'False'
-#cf25_test = 'False'
-
-#add condition if absent to make it False
-#TMA_Test = sys.argv[2] #'True' or blank (unless cf25 is to be used otherwise should be 'False')
-#cf25_test = sys.argv[3] # 'True' or blank
 os.chdir(master_dir)
 
 #! change O2 global path and cycif environment file each update
@@ -898,6 +892,7 @@ class Summary(object):
     parameters = master_dir
     modules = ['conda2/4.2.13']
     run = ''.join(['python ' + O2_global_path + 'bin/Project_Run_Summary.py'])
+    run_name = 'NA'
     sbatch = ['-p short', '-t 0-1:00', '-J Run_Summary', '-o Step_7_Project_Summary.o', '-e Step_7_Project_Summary.e']
 
     # initilizing class and printing when done
@@ -920,7 +915,7 @@ class Summary(object):
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        print(self.run, self.parameters)
+        print(self.run, self.parameters, self.run_name)
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
@@ -938,6 +933,8 @@ if __name__ == '__main__':
 
     # grab all image folders within master directory
     samples = next(os.walk(master_dir))[1]
+    # log folder is where run logs are stored, exclude from folder to execute
+    samples = [n for n in samples if not ('log' in n)]
 
     #QC
     part1=QC()
@@ -980,6 +977,7 @@ if __name__ == '__main__':
 
     # Summary
     part7 = Summary()
+    part7.run_name = condition.get('Run').get('Name') #name given for run
     part7.save_sbatch_file()
 
     #merge all sbatch jobs for the samples to be run into one file to be submitted to O2
