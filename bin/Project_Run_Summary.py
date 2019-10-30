@@ -72,38 +72,37 @@ except:
     log_name = log_name + '.' + time.time()
 
 #store log files
-command = ''join(['mv CyCif_Pipeline_log.txt ' + log_name])
+command = ''.join(['mv CyCif_Pipeline_log.txt ' + log_name])
 os.system(command)
 
-command = ''join(['mv cycif_pipeline_versions.txt ' + log_name])
+command = ''.join(['mv cycif_pipeline_versions.txt ' + log_name])
 os.system(command)
 
-command = ''join(['mv Run_CyCif_pipeline.sh ' + log_name])
+command = ''.join(['mv Run_CyCif_pipeline.sh ' + log_name])
 os.system(command)
 
-command = ''join(['mv *.e ' + log_name])
+command = ''.join(['mv *.e ' + log_name])
 os.system(command)
 
-command = ''join(['mv *.o ' + log_name])
+command = ''.join(['mv *.o ' + log_name])
 os.system(command)
 
-command = ''join(['mv *.sh ' + log_name])
+command = ''.join(['mv *.sh ' + log_name])
 os.system(command)
 
-command = ''join(['cp markers.csv ' + log_name])
+command = ''.join(['cp markers.csv ' + log_name])
 os.system(command)
 
-command = ''join(['cp data.yaml ' + log_name])
+command = ''.join(['cp data.yaml ' + log_name])
 os.system(command)
 
-command = ''join(['mv CyCif_Run_Summary.csv ' + log_name])
+command = ''.join(['mv CyCif_Run_Summary.csv ' + log_name])
 os.system(command)
 
 #grab all samples
 samples = next(os.walk(master_dir))[1]
 # log folder is where run logs are stored, exclude from folder to execute
 samples = [n for n in samples if not ('log' in n)]
-
 
 #process summary per sample
 for i in samples:
