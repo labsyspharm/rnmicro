@@ -178,7 +178,7 @@ def pipeline_checking(master_dir,samples,pipeline):
             #print(i + ' Segmentation Folder Found')
             #if files exist, remove segmenter from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/segmentation/*.tif']))) == 4):
-                print(i + 'Segmentation Folder Found, skipping')
+                print(i + ' Segmentation Folder Found, skipping')
                 #pop off segmenter
                 pipeline = [n for n in pipeline if not ('segmenter' in n)]
 
@@ -190,8 +190,8 @@ def pipeline_checking(master_dir,samples,pipeline):
             if os.access(''.join([master_dir + '/markers.csv']), mode=0):
                 markers = pd.read_csv(''.join([master_dir + '/markers.csv']))
 
-                # if files exist, remove feature extracto from pipeline
-                if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)+1) & os.access(''.join([master_dir + '/' + i + '.csv']), mode=0):
+                # if files exist, remove feature extractor from pipeline
+                if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)-1):
                     print(i + 'Feature Extractor run previously, skipping')
                     # pop off feature extractor
                     pipeline = [n for n in pipeline if not ('feature_extractor' in n)]
