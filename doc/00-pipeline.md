@@ -7,19 +7,22 @@ comprising [stitching and registration](#stitch), [segmentation](#segment), and
 ## Installation
 
 Run the following command to install the pipeline execution tools:
+
 ```bash
 bash /n/groups/lsp/cycif/mcmicro/O2_install.sh
 source ~/.bash_profile
 ```
 
 Run this command to check for success:
+
 ```bash
 which cycif_pipeline_activate.sh
 ```
-* If you see `/n/groups/lsp/cycif/CyCif_Manager/bin/cycif_pipeline_activate.sh`, the
+* If you see `/n/groups/lsp/cycif/mcmicro/bin/cycif_pipeline_activate.sh`, the
   installation succeeded.
-* If you see `no cycif_pipeline_activate.sh in ...` then the installation
+* If you see no cycif_pipeline_activate.sh in ...` then the installation
   failed.
+* If failed, contact someone from computational forum
 
 ## Usage
 
@@ -33,7 +36,7 @@ First you will need to setup an ssh Key so O2 can connect to the transfer server
 
 *See Instructions in FAQ*
 
-Next you will need to transfer your data to the scratch2 volume:
+Next you will need to transfer your data to the scratch space (temporary high data volume storage):
 
 ```bash
 sbatch transfer.sbatch FROM /n/scratch2/abc123/PROJECT
@@ -42,6 +45,8 @@ sbatch transfer.sbatch FROM /n/scratch2/abc123/PROJECT
 Replace `FROM` with the path to your data, and `PROJECT` with a short name for
 this project or experiment. We will refer to `/n/scratch2/abc123/PROJECT` as the
 "working directory".
+
+*See Folder Setup in Folder Organization Example*
 
 ### Go to the working directory
 
@@ -161,6 +166,37 @@ mLY6C
 mCD8A
 mCD68
 ```
+* File 'data.yaml' listing what parameters to use for pipeline execution (If you are unsure, just use the current ones) Example:
+
+```
+---
+Run:
+  Name: 'CyCif Example'
+  TMA: False
+  cf25: False
+  file_extension: .rcpnl
+QC:
+Illumination:
+  lambda_flat: 0.1
+  lambda_dark: 0.01
+  estimate_flat_field_only: False
+  max_number_of_fields_used: None
+Stitcher:
+  -m: 30
+  --filter-sigma: 0
+Probability_Mapper:
+  dapi_channel: 0
+  hs_scaling: 1
+  vs_scaling: 1
+Segmenter:
+  HPC: true
+  fileNum: 1
+  TissueMaskChan: [2]
+  logSigma: [3 30]
+  mask: tissue
+  segmentCytoplasm: ignoreCytoplasm
+Feature_Extractor:
+```
 
 ## Frequently Asked Questions (FAQ)
 
@@ -259,7 +295,7 @@ windows)
 git clone https://github.com/labsyspharm/mcmicro.git
 ```
 
-Install conda environments and example data by running within github directory
+Install conda environments, example data, and github repository dependencies by running within github directory
 
 ```
 install_environments.sh
