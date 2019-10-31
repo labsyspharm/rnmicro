@@ -26,10 +26,12 @@ file = 'data.yaml'
 os.chdir(master_dir)
 
 #! change O2 global path and cycif environment file each update
-O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
 
 #easy global environment path and version updating on O2 (for switching between testing and stable versions)
+#O2 testing location
 #O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
+#O2 stable version
+O2_global_path = '/n/groups/lsp/cycif/mcmicro'
 Version = 'v1.2'
 
 ################
