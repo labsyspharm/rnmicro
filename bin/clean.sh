@@ -10,7 +10,7 @@ rm -fr */cell_states
 rm -fr */clustering  
 rm -fr */dearray  
 rm -fr */feature_extraction  
-rm -fr */illumination_profiles  
+#rm -fr */illumination_profiles  
 rm -fr */prob_maps  
 rm -fr */registration
 rm -fr */segmentation
