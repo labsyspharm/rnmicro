@@ -1,0 +1,28 @@
+--- 
+Run:
+  Name: 'CyCif Example'
+  TMA: False
+  cf25: False
+  file_extension: .rcpnl
+QC:
+Illumination:
+  lambda_flat: 0.1
+  lambda_dark: 0.01
+  estimate_flat_field_only: False
+  max_number_of_fields_used: None
+Stitcher:
+  -m: 30 
+  --filter-sigma: 0
+Probability_Mapper:
+  dapi_channel: 0
+  hs_scaling: 1
+  vs_scaling: 1
+Segmenter:
+  HPC: true
+  fileNum: 1
+  TissueMaskChan: [2]
+  logSigma: [3 30]
+  mask: tissue
+  segmentCytoplasm: ignoreCytoplasm
+Feature_Extractor:
+

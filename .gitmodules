@@ -1,0 +1,12 @@
+[submodule "dev_module_git/UnMicst"]
+	path = dev_module_git/UnMicst
+	url = https://github.com/HMS-IDAC/UnMicst.git
+[submodule "dev_module_git/histoCAT"]
+	path = dev_module_git/histoCAT
+	url = https://github.com/DenisSch/histoCAT.git
+[submodule "dev_module_git/ashlar"]
+	path = dev_module_git/ashlar
+	url = https://github.com/labsyspharm/ashlar.git
+[submodule "dev_module_git/batchtmaDearray"]
+	path = dev_module_git/batchtmaDearray
+	url = https://github.com/HMS-IDAC/batchtmaDearray.git
