@@ -18,9 +18,21 @@ from toolbox.PartitionOfImage import PI2D
 
 # Location
 image_dir = os.path.normpath(sys.argv[1]) #expects 1 folder for 1 image
+<<<<<<< HEAD
 dapi = int(sys.argv[2]) #which dapi channel to use for segmenting
 hs = int(sys.argv[3]) #what scaling to use
 vs = int(sys.argv[4]) #what scaling to use
+=======
+<<<<<<< HEAD:bin/run_batchUNet2DtCycif_v1.1.py
+dapi = int(sys.argv[2])
+hs = int(sys.argv[3])
+vs = int(sys.argv[4])
+=======
+dapi = int(sys.argv[2]) #which dapi channel to use for segmenting
+hs = int(sys.argv[3]) #what scaling to use
+vs = int(sys.argv[4]) #what scaling to use
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3:bin/run_batchUNet2DtCycif_mcmicro.py
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3
 
 def concat3(lst):
 		return tf.concat(lst,3)
@@ -553,28 +565,65 @@ if __name__ == '__main__':
 		fileName = os.path.basename(iFile)
 		fileNamePrefix = fileName.split(os.extsep, 1)
 		I = tifffile.imread(iFile, key=dapiChannel)
+<<<<<<< HEAD
 		rawI = I
+=======
+<<<<<<< HEAD:bin/run_batchUNet2DtCycif_v1.1.py
+=======
+		rawI = I
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3:bin/run_batchUNet2DtCycif_mcmicro.py
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3
 		hsize = int((float(I.shape[0])*float(hs)))
 		vsize = int((float(I.shape[1])*float(vs)))
 		I = resize(I,(hsize,vsize))
 		I = im2double(sk.rescale_intensity(I, in_range=(np.min(I), np.max(I)), out_range=(0, 0.983)))
+<<<<<<< HEAD
 		rawI = im2double(rawI) / np.max(im2double(rawI))
+=======
+<<<<<<< HEAD:bin/run_batchUNet2DtCycif_v1.1.py
+=======
+		rawI = im2double(rawI) / np.max(im2double(rawI))
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3:bin/run_batchUNet2DtCycif_mcmicro.py
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3
 		outputPath = iSample + '/prob_maps'
 		print(outputPath)
 		if not os.path.exists(outputPath):
 			os.makedirs(outputPath)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:bin/run_batchUNet2DtCycif_v1.1.py
+		K = np.zeros((2,I.shape[0],I.shape[1]))
+		contours = UNet2D.singleImageInference(I,'accumulate',1)
+		K[1,:,:] = I
+=======
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3
 		K = np.zeros((2,rawI.shape[0],rawI.shape[1]))
 		contours = UNet2D.singleImageInference(I,'accumulate',1)
 		contours = resize(contours, (rawI.shape[0], rawI.shape[1]))
 		K[1,:,:] = rawI
+<<<<<<< HEAD
+=======
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3:bin/run_batchUNet2DtCycif_mcmicro.py
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3
 		K[0,:,:] = contours
 		print('tifwrite before contours')
 		tifwrite(np.uint8(255 * K),
 				 outputPath + '/' + fileNamePrefix[0] + '_ContoursPM_' + str(dapiChannel + 1) + '.tif')
 		del K
+<<<<<<< HEAD
 		K = np.zeros((1, rawI.shape[0], rawI.shape[1]))
 		nuclei = UNet2D.singleImageInference(I,'accumulate',2)
 		nuclei = resize(nuclei, (rawI.shape[0], rawI.shape[1]))
+=======
+<<<<<<< HEAD:bin/run_batchUNet2DtCycif_v1.1.py
+		K = np.zeros((1, I.shape[0], I.shape[1]))
+		nuclei = UNet2D.singleImageInference(I,'accumulate',2)
+=======
+		K = np.zeros((1, rawI.shape[0], rawI.shape[1]))
+		nuclei = UNet2D.singleImageInference(I,'accumulate',2)
+		nuclei = resize(nuclei, (rawI.shape[0], rawI.shape[1]))
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3:bin/run_batchUNet2DtCycif_mcmicro.py
+>>>>>>> 2c060a5bb1f21554a32d6172e13ebbe5da26abc3
 		K[0, :, :] = nuclei
 		print('before tifwrite nuclei')
 		tifwrite(np.uint8(255 * K),
