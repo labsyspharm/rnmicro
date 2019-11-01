@@ -356,6 +356,10 @@ def master(samples,TMA_Test):
     print('Saving Run_CyCif_pipeline.sh')
     save_cycif_pipeline(res)
 
+######
+#YAML#
+######
+
 #parse user parameters to set, otherwise use default
 def yaml_parser(file):
     with open(file) as f:
