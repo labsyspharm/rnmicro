@@ -31,7 +31,7 @@ os.chdir(master_dir)
 #O2 testing location
 #O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
 #O2 stable version
-O2_global_path = '/n/groups/lsp/cycif/mcmicro'
+O2_global_path = '/n/groups/lsp/cycif/mcmicro/'
 #Version = 'v1.2'
 
 ################
