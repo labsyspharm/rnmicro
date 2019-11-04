@@ -69,7 +69,7 @@ try:
 except:
     print('Another mcmicro run with same name already exists, making alternative folder')
     os.makedirs(''.join([log_name + '.' + str(time.time())]))
-    log_name = log_name + '.' + time.time()
+    log_name = log_name + '.' + str(time.time())
 
 #store log files
 command = ''.join(['mv CyCif_Pipeline_log.txt ' + log_name])
