@@ -98,10 +98,9 @@ def file_err_checking(samples,master_dir):
 
 # check if the file name has not been modified as order of image name is how the files are stitched together
 def file_name_checking(samples,master_dir):
-    print('Checking if Raw File Names Have Been Modified (Assuming RareCyte)')
-    #files = next(os.walk(master_dir))[1]
+    print('Checking if Raw File Names Have Been Modified: Order of cycles depends on cycle file name')
 
-    #rename files to ensure correct order
+    #rename files to ensure correct order (RareCyte)
     for i in iter(samples):
         print('Checking Image: ' + i)
         #find
@@ -306,8 +305,10 @@ def save_module_versions():
     f = open('cycif_pipeline_versions.txt', 'w')
     with redirect_stdout(f):
         #change to O2 working directory and grab github version of mcmicro
+        print(O2_globa_path)
         os.chdir(O2_global_path)
         result = subprocess.run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE)
+        print(result)
         print('Cycif Pipeline Version:', print(str(result.stdout.decode("utf-8").rstrip())))
         print('Environment Versions:')
         # go through each environment in /environments/ and capture the environment modification time stamp to get 'version'
