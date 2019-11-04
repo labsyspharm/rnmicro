@@ -25,7 +25,7 @@ mkdir -p raw_images illumination_profiles
 base=$(pwd)
 for i in `seq 10`; do
   name="exemplar-001-cycle-$(printf %02d $i)"
-  cd "$base/raw_images"
+  cd "$base/raw_files"
   echo "$name raw image"
   curl -f -# -O "$base_url/raw_images/$name.ome.tiff"
   cd "$base/illumination_profiles"
