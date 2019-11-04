@@ -21,13 +21,13 @@ echo
 
 mkdir -p "$dataset"
 cd "$dataset"
-mkdir -p raw_images illumination_profiles
+mkdir -p raw_files illumination_profiles
 base=$(pwd)
 for i in `seq 10`; do
   name="exemplar-001-cycle-$(printf %02d $i)"
   cd "$base/raw_files"
   echo "$name raw image"
-  curl -f -# -O "$base_url/raw_images/$name.ome.tiff"
+  curl -f -# -O "$base_url/raw_files/$name.ome.tiff"
   cd "$base/illumination_profiles"
   echo "$name illumination profiles (2)"
   curl -f -# -O "$base_url/illumination_profiles/$name-dfp.tif"
