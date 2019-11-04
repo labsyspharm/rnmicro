@@ -6,7 +6,7 @@ base_url='https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
 
 # We will use this name for both the top level project directory as well as the
 # single dataset directory inside it.
-dataset="exemplar-001"
+dataset="exemplar_001"
 
 echo "Creating project directory '$dataset'"
 mkdir -p "$dataset"
