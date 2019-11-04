@@ -309,7 +309,7 @@ def save_module_versions():
         os.chdir(O2_global_path)
         result = subprocess.run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE)
         print('Cycif Pipeline Version:')
-        print(result)
+        print(str(result.stdout.decode("utf-8").rstrip()))
         print('Environment Versions:')
         # go through each environment in /environments/ and capture the environment modification time stamp to get 'version'
         environments = next(os.walk(''.join([O2_global_path + '/environments'])))[1]
