@@ -68,7 +68,7 @@ try:
     os.makedirs(log_name)
 except:
     print('Another mcmicro run with same name already exists, making alternative folder')
-    os.makedirs(''.join([log_name + '.' + time.time()]))
+    os.makedirs(''.join([log_name + '.' + str(time.time())]))
     log_name = log_name + '.' + time.time()
 
 #store log files
