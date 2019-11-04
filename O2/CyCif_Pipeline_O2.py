@@ -108,31 +108,33 @@ def file_name_checking(samples,master_dir):
         #remove path length
         to_process = [i.split('/')[-1] for i in to_process]
 
-        #test if past test based on 4 tests
-        test = 'Pass'
-        # default is Pass
-        for n in to_process:
-            if len(n.split('_')) == 4:
-                test = 'Pass'
-                # TODO:fix
-                # if n.split('_')[0] != 'Scan': #first word should be Scan
-                #    test = 'Fail'
-                # if n.split('_')[1].isdigit(): #second statement should be a Date
-                #    test = 'Fail'
-                # if n.split('_')[2].isdigit(): #third statement should be a number
-                #    test = 'Fail'
-                # if len(n.split('_')[3].split('x')) == 3: #fourth statement should be '01x4x00154', test is splitting by x == 3 splits
-                #    test = 'Fail'
-            else:
-                test = 'Fail'
+        #Only run if Rarecyte image
+        if microscope_check(i,master_dir) == '.rcpnl':
+            #default test is passed based on 4 tests
+            test = 'Pass'
+            # default is Pass
+            for n in to_process:
+                if len(n.split('_')) == 4:
+                    test = 'Pass'
+                    # TODO:fix
+                    # if n.split('_')[0] != 'Scan': #first word should be Scan
+                    #    test = 'Fail'
+                    # if n.split('_')[1].isdigit(): #second statement should be a Date
+                    #    test = 'Fail'
+                    # if n.split('_')[2].isdigit(): #third statement should be a number
+                    #    test = 'Fail'
+                    # if len(n.split('_')[3].split('x')) == 3: #fourth statement should be '01x4x00154', test is splitting by x == 3 splits
+                    #    test = 'Fail'
+                else:
+                    test = 'Fail'
 
-        #what to do if test fails or pass
-        if test == 'Fail':
-            print('ERROR: Assuming RareCyte, Raw File name has been modified: Order of cycles depends on cycle file name')
-            #print('Suggest running \'Rename.py\'')
-            #print('Will turn  HER2_BR_Cycle1_Scan_20190612_164155_01x4x00154.rcpnl into 20190612_164155_01x4x00154.rcpnl')
-        else:
-            print('Pass: ' + i + ' raw files not modified')
+            #what to do if test fails or pass
+            if test == 'Fail':
+                print('ERROR: Assuming RareCyte, Raw File name has been modified: Order of cycles depends on cycle file name')
+                #print('Suggest running \'Rename.py\'')
+                #print('Will turn  HER2_BR_Cycle1_Scan_20190612_164155_01x4x00154.rcpnl into 20190612_164155_01x4x00154.rcpnl')
+            else:
+                print('Pass: ' + i + ' raw files not modified')
 
 #check if any module parts of pipeline have already been run
 #input: path to data, list of images, list of pipeline modules to run
