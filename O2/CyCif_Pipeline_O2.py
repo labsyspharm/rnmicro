@@ -305,7 +305,7 @@ def save_module_versions():
     f = open('cycif_pipeline_versions.txt', 'w')
     with redirect_stdout(f):
         #change to O2 working directory and grab github version of mcmicro
-        print(O2_globa_path)
+        print(O2_global_path)
         os.chdir(O2_global_path)
         result = subprocess.run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE)
         print(result)
