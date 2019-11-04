@@ -160,7 +160,7 @@ for i in samples:
     if os.access(''.join([master_dir + '/' + i + '/feature_extraction']), mode=0):
         if os.access(''.join([master_dir + '/markers.csv']), mode=0):
             markers = pd.read_csv(''.join([master_dir + '/markers.csv']))
-
+            print(''.join([master_dir + i + '/feature_extraction/' + i + '.csv']))
             # if files exist, remove feature extracto from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)+1):
                 if os.access(''.join([master_dir + i + '/feature_extraction/' + i + '.csv']), mode=0):
