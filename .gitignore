@@ -4,7 +4,6 @@
 /example_data/
 /O2/*.sh
 /local/local_login.txt
-/dev_module_git/
 
 # History files
 .Rhistory
