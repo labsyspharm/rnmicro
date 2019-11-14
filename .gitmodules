@@ -1,0 +1,15 @@
+[submodule "dev_module_git/ashlar"]
+	path = dev_module_git/ashlar
+	url = https://github.com/labsyspharm/ashlar.git
+[submodule "dev_module_git/UnMicst"]
+	path = dev_module_git/UnMicst
+	url = https://github.com/HMS-IDAC/UnMicst.git
+[submodule "dev_module_git/histoCAT"]
+	path = dev_module_git/histoCAT
+	url = https://github.com/DenisSch/histoCAT.git
+[submodule "dev_module_git/ImageJ_Ashlar"]
+	path = dev_module_git/ImageJ_Ashlar
+	url = https://gist.github.com/jmuhlich/96417108a2cf7d95ba9258a96904ba5a
+[submodule "dev_module_git/Coreograph"]
+	path = dev_module_git/Coreograph
+	url = https://github.com/HMS-IDAC/Coreograph.git
