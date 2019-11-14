@@ -1,0 +1,6 @@
+#in theory: initiates
+git submodule update --init --recursive
+#update to latest version
+git submodule update --recursive
+#alt way to update to latest git repo version (still doesn't update)
+git pull --recurse-submodules
