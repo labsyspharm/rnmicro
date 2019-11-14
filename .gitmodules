@@ -10,3 +10,6 @@
 [submodule "dev_module_git/batchtmaDearray"]
 	path = dev_module_git/batchtmaDearray
 	url = https://github.com/HMS-IDAC/batchtmaDearray.git
+[submodule "dev_module_git/ImageJ_ashlar"]
+	path = dev_module_git/ImageJ_ashlar
+	url = https://gist.github.com/jmuhlich/96417108a2cf7d95ba9258a96904ba5a
