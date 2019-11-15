@@ -679,7 +679,7 @@ class Probability_Mapper(object):
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        print(self.run, self.directory + '/' + self.sample, str(part4.parameters.get('dapi_channel')), str(part6.parameters.get('hs_scaling')),str(part6.parameters.get('vs_scaling')))
+        print(self.run, self.directory + '/' + self.sample, str(part4.parameters.get('dapi_channel')), str(part4.parameters.get('hs_scaling')),str(part4.parameters.get('vs_scaling')))
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
