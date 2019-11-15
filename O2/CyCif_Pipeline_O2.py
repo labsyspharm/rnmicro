@@ -101,6 +101,7 @@ def file_err_checking(samples,master_dir):
 
 #check sample names fit histoCat criteria of no dashes in name
 def sample_name_err_checking(samples):
+    print('Checking if Sample names match histoCat requirements')
     # check and change sample name if samples have any dashes within them as Histocat throws an error if exist
     test = [n.split('-') for n in samples ]
     test = [n for n in test if (n.__len__() >= 2)]
@@ -110,7 +111,7 @@ def sample_name_err_checking(samples):
         print('Suggest changing samples names to exclude dashes')
         print('Example: mv exemplar-001 exemplar_001')
     else:
-        print('Sample Names match histoCat requirements')
+        print('PASSED: Sample Names match histoCat requirements')
 
 # check if the file name has not been modified as order of image name is how the files are stitched together
 def file_name_checking(samples,master_dir):
