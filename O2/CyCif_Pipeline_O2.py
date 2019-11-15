@@ -155,7 +155,7 @@ def pipeline_checking(master_dir,samples,pipeline):
             if os.path.isdir(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i, master_dir)])):
                 # calculate number of cycles to verify illumination was done on
                 cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i, master_dir)])))
-            if os.path.isdir(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i, master_dir)])):
+            else:
                 # calculate number of cycles to verify illumination was done on
                 cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i, master_dir)])))
 
