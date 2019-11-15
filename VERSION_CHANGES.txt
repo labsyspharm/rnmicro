@@ -1,9 +1,10 @@
 # Comments for changes in Versions
 V1.2.1 - Add Exemplar Data
 	- Added mcmicro-download-exemplar-001.sh
-	- Fixed several bugs related to checking
-	- Added Exemplar Data won't trip raw image name change test  
-
+	- Added mcmicro-download-exemplar-002.sh
+	- Added checking sample name to be HistoCat compliant
+	- Added raw_image or raw_files as folder where raw images are stored 
+	- Updated and fixed any bugs related to installing mcmicro conda environments or git submodules that developers github repos rely on
 
 V1.2.0 - TMA & YAML parsing
 
