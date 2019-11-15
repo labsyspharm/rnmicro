@@ -109,7 +109,7 @@ def file_name_checking(samples,master_dir):
         #find
         if os.path.isdir(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])):
             to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)]))
-        if os.path.isdir(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)])):
+        else:
             to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)]))
         #remove path length
         to_process = [i.split('/')[-1] for i in to_process]
