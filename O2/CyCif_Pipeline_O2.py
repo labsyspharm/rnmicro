@@ -416,7 +416,7 @@ def update_parameters(file,part3,part4,part5,part6):
     #Segmenter
     part5.parameters = condition.get('Segmenter')
 
-    #Feature Extractor [TODO]
+    #Feature Extractor
     part6.parameters = condition.get('Feature_Extractor')
 
     return(condition)
@@ -673,8 +673,8 @@ class Probability_Mapper(object):
         if self.TMA == 'True':
             TMA_mode()
         #expected parameters is an array, yaml file parsing creates dict
-        if isinstance(self.parameters, dict):
-            self.parameters = [v for v in self.parameters.values()]
+        #if isinstance(self.parameters, dict):
+        #    self.parameters = [v for v in self.parameters.values()]
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
