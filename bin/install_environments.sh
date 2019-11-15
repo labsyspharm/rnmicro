@@ -12,7 +12,7 @@ echo 'Setting Up CyCif Pipeline for Local Machine Run'
 echo 'Make Folders'
 mkdir -p environments
 echo 'Download CyCif Pipeline Environment'
-wget --output-document=cycif_pipeline.tar.gz https://www.dropbox.com/s/bc7s60ri10ey171/cycif_pipeline.tar.gz?dl=0
+wget --output-document=cycif_pipeline.tar.gz https://www.dropbox.com/s/rd15k4yg7lk6sip/cycif_pipeline.tar.gz?dl=0
 echo 'Download ImageJ Environment'
 wget --output-document=ImageJ.tar.gz https://www.dropbox.com/s/bledyqpw2n1hz2f/ImageJ.tar.gz?dl=0
 echo 'Downloading Ashlar Environment'
