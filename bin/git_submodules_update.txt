@@ -1,4 +1,7 @@
-#in theory: initiates
+#need conda environment for git lfs
+module load conda2/4.2.13
+source activate  /n/groups/lsp/cycif/mcmicro/environments/cycif_pipeline
+#initiates
 git submodule update --init --recursive
 #update to latest version
 git submodule update --recursive
