@@ -23,6 +23,14 @@ def microscope_check(current_sample,master_dir):
         #print('Exemplar Dataset Used')
         output = 'ome.tiff'
         return(output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = '.ome.tiff'
+        return (output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.rcpnl')) != 0:
         #print('Rarecyte Microscope')
         output = '.rcpnl'
@@ -115,6 +123,9 @@ for i in samples:
     if os.access(''.join([master_dir + '/' + i + '/raw_files']),mode=0):
         #Find the number of Cycles
         Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
+    if os.access(''.join([master_dir + '/' + i + '/raw_images']),mode=0):
+        #Find the number of Cycles
+        Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)])))
     else:
         Cycle_Number = 'Fail'
 
