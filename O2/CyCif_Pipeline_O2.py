@@ -44,6 +44,14 @@ def microscope_check(current_sample,master_dir):
         print('Exemplar Dataset Used')
         output = '.ome.tiff'
         return(output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = '.ome.tiff'
+        return (output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.rcpnl')) != 0:
         print('Rarecyte Microscope')
         output = '.rcpnl'
@@ -76,25 +84,20 @@ def file_err_checking(samples,master_dir):
         print('Checking Folders for Image:',current)
 
         #check if raw_files folder exists
-        if os.access(master_dir + '/' + current + '/raw_files',mode=0):
-            print('PASSED: ' + current + ' raw files folder present')
+        if (os.access(master_dir + '/' + current + '/raw_files',mode=0)) | (os.access(master_dir + '/' + current + '/raw_images',mode=0)):
+            print('PASSED: ' + current + ' raw files or raw images folder present')
 
             # check if raw files are present
-            if len(glob.glob(master_dir + '/' + current + '/raw_files/*' + microscope_check(current,master_dir))) >0:
+            if (len(glob.glob(master_dir + '/' + current + '/raw_files/*' + microscope_check(current,master_dir))) >0) | \
+                    (len(glob.glob(master_dir + '/' + current + '/raw_images/*' + microscope_check(current,master_dir)))) >0:
                 print('PASSED: ' + current + ' raw images present')
             else:
                 print('ERROR: Uh Oh! Sample: ' + current + ' does not have raw image files')
                 print('If your microscope is not a RareCyte or Exemplar Data, pipeline may work, but bug Nathan for not adding your favorite microscope')
 
-            #check if metadata files are present: metadata is not essential (not sure why we need/want it)
-            # if len(glob.glob(master_dir + '/' + current + '/raw_files/*.metadata')) > 0:
-            #     print('test')
-            # else:
-            #     print('Sample' + current + 'does not have .metadata files')
-            #     print('Customary but not necessary')
         else:
-            print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_files folder')
-            print('Within each image folder, there must be a raw_files folder containing the raw images for each cycle')
+            print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_images or raw_files folder')
+            print('Within each image folder, there must be a raw_images or raw_files folder containing the raw images for each cycle')
 
 # check if the file name has not been modified as order of image name is how the files are stitched together
 def file_name_checking(samples,master_dir):
@@ -104,7 +107,10 @@ def file_name_checking(samples,master_dir):
     for i in iter(samples):
         print('Checking Image: ' + i)
         #find
-        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)]))
+        if os.path.isdir(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])):
+            to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)]))
+        if os.path.isdir(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)])):
+            to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)]))
         #remove path length
         to_process = [i.split('/')[-1] for i in to_process]
 
@@ -146,8 +152,15 @@ def pipeline_checking(master_dir,samples,pipeline):
         if os.access(''.join([master_dir + '/' + i + '/illumination_profiles']),mode=0):
             #print(i + ' Illumination Profile Folder Exists')
 
+            if os.path.isdir(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i, master_dir)])):
+                # calculate number of cycles to verify illumination was done on
+                cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i, master_dir)])))
+            if os.path.isdir(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i, master_dir)])):
+                # calculate number of cycles to verify illumination was done on
+                cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i, master_dir)])))
+
             #calculate number of cycles to verify illumination was done on
-            cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
+            #cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
 
             #Solve for false positives if raw image files are missing
             if cycle_number != 0:
@@ -666,7 +679,7 @@ class Probability_Mapper(object):
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        print(self.run, self.directory + '/' + self.sample, self.parameters[0], self.parameters[1],self.parameters[2])
+        print(self.run, self.directory + '/' + self.sample, str(part4.parameters.get('dapi_channel')), str(part6.parameters.get('hs_scaling')),str(part6.parameters.get('vs_scaling')))
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
