@@ -22,7 +22,7 @@ file = 'data.yaml'
 
 #TODO implement debugging mode
 #! for local testing
-#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
+#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/exemplar-001')
 os.chdir(master_dir)
 
 #! change O2 global path and cycif environment file each update
@@ -98,6 +98,19 @@ def file_err_checking(samples,master_dir):
         else:
             print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_images or raw_files folder')
             print('Within each image folder, there must be a raw_images or raw_files folder containing the raw images for each cycle')
+
+#check sample names fit histoCat criteria of no dashes in name
+def sample_name_err_checking(samples):
+    # check and change sample name if samples have any dashes within them as Histocat throws an error if exist
+    test = [n.split('-') for n in samples ]
+    test = [n for n in test if (n.__len__() >= 2)]
+    if test.__len__() >= 1:
+        print('Samples Names Do Not Match histoCat requirements')
+        print('Offending sample names are:',['-'.join(n) for n in test])
+        print('Suggest changing samples names to exclude dashes')
+        print('Example: mv exemplar-001 exemplar_001')
+    else:
+        print('Sample Names match histoCat requirements')
 
 # check if the file name has not been modified as order of image name is how the files are stitched together
 def file_name_checking(samples,master_dir):
@@ -974,6 +987,8 @@ if __name__ == '__main__':
     samples = next(os.walk(master_dir))[1]
     # log folder is where run logs are stored, exclude from folder to execute
     samples = [n for n in samples if not ('log' in n)]
+    # check and change sample name if samples have any dashes within them as Histocat throws an error if exist
+    sample_name_err_checking(samples)
 
     #QC
     part1=QC()
