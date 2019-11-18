@@ -123,7 +123,7 @@ for i in samples:
     if os.access(''.join([master_dir + '/' + i + '/raw_files']),mode=0):
         #Find the number of Cycles
         Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
-    if os.access(''.join([master_dir + '/' + i + '/raw_images']),mode=0):
+    elif os.access(''.join([master_dir + '/' + i + '/raw_images']),mode=0):
         #Find the number of Cycles
         Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)])))
     else:
