@@ -1,4 +1,4 @@
-# CyCIF Manager
+# Mcmicro
 
 Purpose: Provide pipeline platform infrastructure to streamline CyCIF Analysis
 both on a local machine and on the O2 cluster at HMS

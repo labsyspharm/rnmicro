@@ -22,7 +22,7 @@ file = 'data.yaml'
 
 #TODO implement debugging mode
 #! for local testing
-#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/')
+#master_dir = os.path.normpath('/home/bionerd/Dropbox/@Dana Farber/CyCif/git/mcmicro/example_data/exemplar-001')
 os.chdir(master_dir)
 
 #! change O2 global path and cycif environment file each update
@@ -31,7 +31,7 @@ os.chdir(master_dir)
 #O2 testing location
 #O2_global_path = '/n/groups/lsp/cycif/cycif_pipeline_testing_space/mcmicro/'
 #O2 stable version
-O2_global_path = '/n/groups/lsp/cycif/mcmicro'
+O2_global_path = '/n/groups/lsp/cycif/mcmicro/'
 #Version = 'v1.2'
 
 ################
@@ -43,6 +43,14 @@ def microscope_check(current_sample,master_dir):
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.ome.tiff')) != 0:
         print('Exemplar Dataset Used')
         output = '.ome.tiff'
+        return(output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = '.ome.tiff'
+        return (output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
         return(output)
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.rcpnl')) != 0:
         print('Rarecyte Microscope')
@@ -76,64 +84,77 @@ def file_err_checking(samples,master_dir):
         print('Checking Folders for Image:',current)
 
         #check if raw_files folder exists
-        if os.access(master_dir + '/' + current + '/raw_files',mode=0):
-            print('PASSED: ' + current + ' raw files folder present')
+        if (os.access(master_dir + '/' + current + '/raw_files',mode=0)) | (os.access(master_dir + '/' + current + '/raw_images',mode=0)):
+            print('PASSED: ' + current + ' raw files or raw images folder present')
 
             # check if raw files are present
-            if len(glob.glob(master_dir + '/' + current + '/raw_files/*' + microscope_check(current,master_dir))) >0:
+            if (len(glob.glob(master_dir + '/' + current + '/raw_files/*' + microscope_check(current,master_dir))) >0) | \
+                    (len(glob.glob(master_dir + '/' + current + '/raw_images/*' + microscope_check(current,master_dir)))) >0:
                 print('PASSED: ' + current + ' raw images present')
             else:
                 print('ERROR: Uh Oh! Sample: ' + current + ' does not have raw image files')
                 print('If your microscope is not a RareCyte or Exemplar Data, pipeline may work, but bug Nathan for not adding your favorite microscope')
 
-            #check if metadata files are present: metadata is not essential (not sure why we need/want it)
-            # if len(glob.glob(master_dir + '/' + current + '/raw_files/*.metadata')) > 0:
-            #     print('test')
-            # else:
-            #     print('Sample' + current + 'does not have .metadata files')
-            #     print('Customary but not necessary')
         else:
-            print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_files folder')
-            print('Within each image folder, there must be a raw_files folder containing the raw images for each cycle')
+            print('ERROR: Uh Oh! Image: ' + current + ' did not have the raw_images or raw_files folder')
+            print('Within each image folder, there must be a raw_images or raw_files folder containing the raw images for each cycle')
+
+#check sample names fit histoCat criteria of no dashes in name
+def sample_name_err_checking(samples):
+    print('Checking if Sample names match histoCat requirements')
+    # check and change sample name if samples have any dashes within them as Histocat throws an error if exist
+    test = [n.split('-') for n in samples ]
+    test = [n for n in test if (n.__len__() >= 2)]
+    if test.__len__() >= 1:
+        print('Samples Names Do Not Match histoCat requirements')
+        print('Offending sample names are:',['-'.join(n) for n in test])
+        print('Suggest changing samples names to exclude dashes')
+        print('Example: mv exemplar-001 exemplar_001')
+    else:
+        print('PASSED: Sample Names match histoCat requirements')
 
 # check if the file name has not been modified as order of image name is how the files are stitched together
 def file_name_checking(samples,master_dir):
-    print('Checking if Raw File Names Have Been Modified (Assuming RareCyte)')
-    #files = next(os.walk(master_dir))[1]
+    print('Checking if Raw File Names Have Been Modified: Order of cycles depends on cycle file name')
 
-    #rename files to ensure correct order
+    #rename files to ensure correct order (RareCyte)
     for i in iter(samples):
         print('Checking Image: ' + i)
         #find
-        to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)]))
+        if os.path.isdir(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])):
+            to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)]))
+        else:
+            to_process = glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)]))
         #remove path length
         to_process = [i.split('/')[-1] for i in to_process]
 
-        #test if past test based on 4 tests
-        test = 'Pass'
-        # default is Pass
-        for n in to_process:
-            if len(n.split('_')) == 4:
-                test = 'Pass'
-                # TODO:fix
-                # if n.split('_')[0] != 'Scan': #first word should be Scan
-                #    test = 'Fail'
-                # if n.split('_')[1].isdigit(): #second statement should be a Date
-                #    test = 'Fail'
-                # if n.split('_')[2].isdigit(): #third statement should be a number
-                #    test = 'Fail'
-                # if len(n.split('_')[3].split('x')) == 3: #fourth statement should be '01x4x00154', test is splitting by x == 3 splits
-                #    test = 'Fail'
-            else:
-                test = 'Fail'
+        #Only run if Rarecyte image
+        if microscope_check(i,master_dir) == '.rcpnl':
+            #default test is passed based on 4 tests
+            test = 'Pass'
+            # default is Pass
+            for n in to_process:
+                if len(n.split('_')) == 4:
+                    test = 'Pass'
+                    # TODO:fix
+                    # if n.split('_')[0] != 'Scan': #first word should be Scan
+                    #    test = 'Fail'
+                    # if n.split('_')[1].isdigit(): #second statement should be a Date
+                    #    test = 'Fail'
+                    # if n.split('_')[2].isdigit(): #third statement should be a number
+                    #    test = 'Fail'
+                    # if len(n.split('_')[3].split('x')) == 3: #fourth statement should be '01x4x00154', test is splitting by x == 3 splits
+                    #    test = 'Fail'
+                else:
+                    test = 'Fail'
 
-        #what to do if test fails or pass
-        if test == 'Fail':
-            print('ERROR: Assuming RareCyte, Raw File name has been modified: Order of cycles depends on cycle file name')
-            #print('Suggest running \'Rename.py\'')
-            #print('Will turn  HER2_BR_Cycle1_Scan_20190612_164155_01x4x00154.rcpnl into 20190612_164155_01x4x00154.rcpnl')
-        else:
-            print('Pass: ' + i + ' raw files not modified')
+            #what to do if test fails or pass
+            if test == 'Fail':
+                print('ERROR: Assuming RareCyte, Raw File name has been modified: Order of cycles depends on cycle file name')
+                #print('Suggest running \'Rename.py\'')
+                #print('Will turn  HER2_BR_Cycle1_Scan_20190612_164155_01x4x00154.rcpnl into 20190612_164155_01x4x00154.rcpnl')
+            else:
+                print('Pass: ' + i + ' raw files not modified')
 
 #check if any module parts of pipeline have already been run
 #input: path to data, list of images, list of pipeline modules to run
@@ -145,8 +166,15 @@ def pipeline_checking(master_dir,samples,pipeline):
         if os.access(''.join([master_dir + '/' + i + '/illumination_profiles']),mode=0):
             #print(i + ' Illumination Profile Folder Exists')
 
+            if os.path.isdir(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i, master_dir)])):
+                # calculate number of cycles to verify illumination was done on
+                cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i, master_dir)])))
+            else:
+                # calculate number of cycles to verify illumination was done on
+                cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i, master_dir)])))
+
             #calculate number of cycles to verify illumination was done on
-            cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
+            #cycle_number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
 
             #Solve for false positives if raw image files are missing
             if cycle_number != 0:
@@ -195,10 +223,10 @@ def pipeline_checking(master_dir,samples,pipeline):
 
                 # if files exist, remove feature extractor from pipeline
                 if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)):
-                    print(i + ' Feature Extractor run previously, skipping')
-                    # pop off feature extractor
-                    pipeline = [n for n in pipeline if not ('feature_extractor' in n)]
-
+                    if os.access(''.join([master_dir + '/' + i + '/feature_extraction/' + i + '.csv']), mode=0):
+                        print(i + ' Feature Extractor run previously, skipping')
+                        # pop off feature extractor
+                        pipeline = [n for n in pipeline if not ('feature_extractor' in n)]
     return(pipeline)
 
 ######################
@@ -308,7 +336,8 @@ def save_module_versions():
         #change to O2 working directory and grab github version of mcmicro
         os.chdir(O2_global_path)
         result = subprocess.run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE)
-        print('Cycif Pipeline Version:', print(str(result.stdout.decode("utf-8").rstrip())))
+        print('Cycif Pipeline Version:')
+        print(str(result.stdout.decode("utf-8").rstrip()))
         print('Environment Versions:')
         # go through each environment in /environments/ and capture the environment modification time stamp to get 'version'
         environments = next(os.walk(''.join([O2_global_path + '/environments'])))[1]
@@ -401,7 +430,7 @@ def update_parameters(file,part3,part4,part5,part6):
     #Segmenter
     part5.parameters = condition.get('Segmenter')
 
-    #Feature Extractor [TODO]
+    #Feature Extractor
     part6.parameters = condition.get('Feature_Extractor')
 
     return(condition)
@@ -658,13 +687,13 @@ class Probability_Mapper(object):
         if self.TMA == 'True':
             TMA_mode()
         #expected parameters is an array, yaml file parsing creates dict
-        if isinstance(self.parameters, dict):
-            self.parameters = [v for v in self.parameters.values()]
+        #if isinstance(self.parameters, dict):
+        #    self.parameters = [v for v in self.parameters.values()]
         print('#!/bin/bash')
         self.sbatch_exporter()
         self.module_exporter()
         print('source activate ', self.environment)
-        print(self.run, self.directory + '/' + self.sample, self.parameters[0], self.parameters[1],self.parameters[2])
+        print(self.run, self.directory + '/' + self.sample, str(part4.parameters.get('dapi_channel')), str(part4.parameters.get('hs_scaling')),str(part4.parameters.get('vs_scaling')))
         print('conda deactivate')
         print('sleep 5') # wait for slurm to get the job status into its database
         print('sacct --format=JobID,Submit,Start,End,State,Partition,ReqTRES%30,CPUTime,MaxRSS,NodeList%30 --units=M -j $SLURM_JOBID') #resource usage
@@ -959,6 +988,8 @@ if __name__ == '__main__':
     samples = next(os.walk(master_dir))[1]
     # log folder is where run logs are stored, exclude from folder to execute
     samples = [n for n in samples if not ('log' in n)]
+    # check and change sample name if samples have any dashes within them as Histocat throws an error if exist
+    sample_name_err_checking(samples)
 
     #QC
     part1=QC()

@@ -25,4 +25,6 @@ Segmenter:
   mask: tissue
   segmentCytoplasm: ignoreCytoplasm
 Feature_Extractor:
-
+  mask : cellMask.tif
+  expansionpixels : 5
+  neighborhood : no

@@ -169,7 +169,7 @@ mCD68
 * File 'data.yaml' listing what parameters to use for pipeline execution (If you are unsure, just use the current ones) Example:
 
 ```
----
+--- 
 Run:
   Name: 'CyCif Example'
   TMA: False
@@ -182,7 +182,7 @@ Illumination:
   estimate_flat_field_only: False
   max_number_of_fields_used: None
 Stitcher:
-  -m: 30
+  -m: 30 
   --filter-sigma: 0
 Probability_Mapper:
   dapi_channel: 0
@@ -191,11 +191,14 @@ Probability_Mapper:
 Segmenter:
   HPC: true
   fileNum: 1
-  TissueMaskChan: [2]
-  logSigma: [3 30]
+  TissueMaskChan: [2] #must include brackets
+  logSigma: [3 30] #must include brackets
   mask: tissue
   segmentCytoplasm: ignoreCytoplasm
 Feature_Extractor:
+  mask : cellMask.tif
+  expansionpixels : 5
+  neighborhood : no
 ```
 
 ## Frequently Asked Questions (FAQ)
@@ -285,22 +288,56 @@ total size is 3317993900  speedup is 1.00
 
 ## Instructions for pipeline module developers
 
-Updated your code? Wish to add your method to pipeline? Contact Nathan.
+Updated your code? 
+
+```
+#need conda environment for git lfs (Instructions for O2)
+module load conda2/4.2.13
+#activate the cycif pipeline environment (path
+source activate  [path to mcmicro]/environments/cycif_pipeline
+#clones all developer code based on last update of mcmicro
+git submodule update []
+```
+
+
+Wish to add your method to pipeline? Contact Nathan.
 
 ### Install & Run
-Assumption: Matlab Installed, Linux Environment (can use linux subsystem for
-windows)
+Assumptions: 
+	Matlab Installed
+	Linux Slurm HPC Environment
+	Git Installed
 
 ```
 git clone https://github.com/labsyspharm/mcmicro.git
 ```
 
-Install conda environments, example data, and github repository dependencies by running within github directory
+Install conda environments
 
 ```
-install_environments.sh
-install_example_dataset.sh
-```
+[path to mcmmicro]/bin/install_environments.sh
 
-### Local Install
-Talk to Nathan.
+```
+Downloads exemplar data to current directory
+
+``` 
+[path to mcmmicro]/bin/mcmicro-download-exemplar-001.sh
+[path to mcmmicro]/bin/mcmicro-download-exemplar-002.sh
+```
+Install module code: uses git submodules
+
+```
+#need conda environment for git lfs (Instructions for O2)
+module load conda2/4.2.13
+#activate the cycif pipeline environment (path
+source activate  [path to mcmicro]/environments/cycif_pipeline
+#clones all developer code based on last update of mcmicro 
+git submodule update --init --recursive
+#update to latest version (can update to latest version of developer code, but may have been tested)
+git submodule update --recursive 
+#alt way to update to latest git repo version if submodule update doesn't update
+git pull --recurse-submodules
+```
+### Building the Conda Environments
+
+Instructions for building the ashlar and ashlar_c25 environments are present in mcmicro/bin/ashlar_cf25_update.sh and mcmicro/bin/ashlar_update.sh

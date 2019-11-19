@@ -23,6 +23,14 @@ def microscope_check(current_sample,master_dir):
         #print('Exemplar Dataset Used')
         output = 'ome.tiff'
         return(output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = '.ome.tiff'
+        return (output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
     if len(glob.glob(master_dir + '/' + current_sample + '/raw_files/*.rcpnl')) != 0:
         #print('Rarecyte Microscope')
         output = '.rcpnl'
@@ -68,8 +76,8 @@ try:
     os.makedirs(log_name)
 except:
     print('Another mcmicro run with same name already exists, making alternative folder')
-    os.makedirs(''.join([log_name + '.' + time.time()]))
-    log_name = log_name + '.' + time.time()
+    log_name = log_name + '.' + str(time.time())
+    os.makedirs(log_name)
 
 #store log files
 command = ''.join(['mv CyCif_Pipeline_log.txt ' + log_name])
@@ -115,6 +123,9 @@ for i in samples:
     if os.access(''.join([master_dir + '/' + i + '/raw_files']),mode=0):
         #Find the number of Cycles
         Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_files/*' + microscope_check(i,master_dir)])))
+    elif os.access(''.join([master_dir + '/' + i + '/raw_images']),mode=0):
+        #Find the number of Cycles
+        Cycle_Number = len(glob.glob(''.join([master_dir + '/' + i + '/raw_images/*' + microscope_check(i,master_dir)])))
     else:
         Cycle_Number = 'Fail'
 
@@ -160,10 +171,10 @@ for i in samples:
     if os.access(''.join([master_dir + '/' + i + '/feature_extraction']), mode=0):
         if os.access(''.join([master_dir + '/markers.csv']), mode=0):
             markers = pd.read_csv(''.join([master_dir + '/markers.csv']))
-
+            print(''.join([master_dir + '/' + i + '/feature_extraction/' + i + '.csv']))
             # if files exist, remove feature extracto from pipeline
             if (len(glob.glob(''.join([master_dir + '/' + i + '/feature_extraction/Cell*.mat']))) == len(markers)+1):
-                if os.access(''.join([master_dir + '/feature_extraction/' + i + '.csv']), mode=0):
+                if os.access(''.join([master_dir + '/' + i + '/feature_extraction/' + i + '.csv']), mode=0):
                     Feature_Extraction = 'Pass'
                 else:
                     Feature_Extraction = 'Fail: Final csv file not found'

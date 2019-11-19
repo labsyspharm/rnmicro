@@ -25,6 +25,14 @@ def microscope_check(current_sample):
         print('Exemplar Dataset Used')
         output = '.ome.tiff'
         return(output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = '.ome.tiff'
+        return (output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
     if len(glob.glob(str(current_sample) + '/raw_files/*.rcpnl')) != 0:
         print('Rarecyte Microscope')
         output = '.rcpnl'
@@ -46,8 +54,6 @@ ashlar_path = pathlib.Path(str(sys.argv[2]))
 parameters = ''.join(sys.argv[3:])
 parameters = parameters[1:-1].split(',')
 
-
-
 print('Data Path passed:',path_exp)
 print('Ashlar Path passed:',ashlar_path)
 print('Paramters passed',str(parameters))
@@ -55,7 +61,12 @@ print('Paramters passed',str(parameters))
 # global variables
 raw_file   =  ''.join(['*'  + microscope_check(path_exp)])
 file_type = microscope_check(path_exp)
-raw_dir = path_exp / 'raw_files'
+
+if os.path.isdir(path_exp / 'raw_files'):
+    raw_dir = path_exp / 'raw_files'
+if os.path.isdir(path_exp / 'raw_images'):
+    raw_dir = path_exp / 'raw_images'
+
 files_exp = sorted(raw_dir.glob(raw_file))
 
 print('Processing files in', str(raw_dir))

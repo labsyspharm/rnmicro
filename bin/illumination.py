@@ -29,6 +29,14 @@ def microscope_check(current_sample):
         print('Exemplar Dataset Used')
         output = '.ome.tiff'
         return(output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.ome.tiff')) != 0:
+        print('Exemplar Dataset Used')
+        output = '.ome.tiff'
+        return (output)
+    if len(glob.glob(str(current_sample) + '/raw_images/*.rcpnl')) != 0:
+        print('Rarecyte Microscope')
+        output = '.rcpnl'
+        return(output)
     if len(glob.glob(str(current_sample) + '/raw_files/*.rcpnl')) != 0:
         print('Rarecyte Microscope')
         output = '.rcpnl'
@@ -65,7 +73,13 @@ print('Parameters passed: lambda flat:',parameters.get('lambda_flat'), 'lambda d
 #define raw file variable
 raw_file   =  ''.join(['*'  + microscope_check(path_exp)])
 file_type = microscope_check(path_exp)
-raw_dir = path_exp / 'raw_files'
+
+if os.path.isdir(path_exp / 'raw_files'):
+    raw_dir = path_exp / 'raw_files'
+if os.path.isdir(path_exp / 'raw_images'):
+    raw_dir = path_exp / 'raw_images'
+
+#raw_dir = path_exp / 'raw_files'
 files_exp = sorted(raw_dir.glob(raw_file))
 
 #if len(files_exp) == 0:
