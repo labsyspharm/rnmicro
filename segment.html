@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Image Segmentation | Image Processing Pipeline</title>
+  <meta name="description" content="3 Image Segmentation | Image Processing Pipeline" />
+  <meta name="generator" content="bookdown 0.15 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Image Segmentation | Image Processing Pipeline" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="labsyspharm/mcmicro" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Image Segmentation | Image Processing Pipeline" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="stitch.html"/>
+<link rel="next" href="features.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="extra-styles.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">LSP Image Processing Pipeline</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Quick Start</a></li>
+<li class="chapter" data-level="" data-path="individual-module-documentation.html"><a href="individual-module-documentation.html"><i class="fa fa-check"></i>Individual module documentation</a></li>
+<li class="chapter" data-level="" data-path="howto.html"><a href="howto.html"><i class="fa fa-check"></i>How To Contribute</a><ul>
+<li><a href="howto.html#forksync">Synchronizing your fork with <code>labsyspharm</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="pipeline.html"><a href="pipeline.html"><i class="fa fa-check"></i><b>1</b> End-to-end pipeline execution</a><ul>
+<li class="chapter" data-level="1.1" data-path="pipeline.html"><a href="pipeline.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
+<li class="chapter" data-level="1.2" data-path="pipeline.html"><a href="pipeline.html#usage"><i class="fa fa-check"></i><b>1.2</b> Usage</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="pipeline.html"><a href="pipeline.html#data-transfer"><i class="fa fa-check"></i><b>1.2.1</b> Data transfer</a></li>
+<li class="chapter" data-level="1.2.2" data-path="pipeline.html"><a href="pipeline.html#go-to-the-working-directory"><i class="fa fa-check"></i><b>1.2.2</b> Go to the working directory</a></li>
+<li class="chapter" data-level="1.2.3" data-path="pipeline.html"><a href="pipeline.html#generate-the-pipeline-execution-script"><i class="fa fa-check"></i><b>1.2.3</b> Generate the pipeline execution script</a></li>
+<li class="chapter" data-level="1.2.4" data-path="pipeline.html"><a href="pipeline.html#launch-the-pipeline"><i class="fa fa-check"></i><b>1.2.4</b> Launch the pipeline</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="pipeline.html"><a href="pipeline.html#worked-example-using-a-sample-dataset"><i class="fa fa-check"></i><b>1.3</b> Worked example using a sample dataset</a></li>
+<li class="chapter" data-level="1.4" data-path="pipeline.html"><a href="pipeline.html#results"><i class="fa fa-check"></i><b>1.4</b> Results</a></li>
+<li class="chapter" data-level="1.5" data-path="pipeline.html"><a href="pipeline.html#visualize-images-on-omero"><i class="fa fa-check"></i><b>1.5</b> Visualize Images on Omero</a></li>
+<li class="chapter" data-level="1.6" data-path="pipeline.html"><a href="pipeline.html#tips-and-tricks"><i class="fa fa-check"></i><b>1.6</b> Tips and Tricks</a><ul>
+<li class="chapter" data-level="1.6.1" data-path="pipeline.html"><a href="pipeline.html#processing-your-own-data"><i class="fa fa-check"></i><b>1.6.1</b> Processing your own data</a></li>
+</ul></li>
+<li class="chapter" data-level="1.7" data-path="pipeline.html"><a href="pipeline.html#frequently-asked-questions-faq"><i class="fa fa-check"></i><b>1.7</b> Frequently Asked Questions (FAQ)</a><ul>
+<li class="chapter" data-level="1.7.1" data-path="pipeline.html"><a href="pipeline.html#help-my-o2-environment-changed"><i class="fa fa-check"></i><b>1.7.1</b> Help my O2 environment changed!</a></li>
+<li class="chapter" data-level="1.7.2" data-path="pipeline.html"><a href="pipeline.html#how-to-setup-o2-ssh-key"><i class="fa fa-check"></i><b>1.7.2</b> How To Setup O2 SSH Key</a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="pipeline.html"><a href="pipeline.html#instructions-for-pipeline-module-developers"><i class="fa fa-check"></i><b>1.8</b> Instructions for pipeline module developers</a><ul>
+<li class="chapter" data-level="1.8.1" data-path="pipeline.html"><a href="pipeline.html#install-run"><i class="fa fa-check"></i><b>1.8.1</b> Install &amp; Run</a></li>
+<li class="chapter" data-level="1.8.2" data-path="pipeline.html"><a href="pipeline.html#building-the-conda-environments"><i class="fa fa-check"></i><b>1.8.2</b> Building the Conda Environments</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="stitch.html"><a href="stitch.html"><i class="fa fa-check"></i><b>2</b> Image Stitching and Registration</a><ul>
+<li class="chapter" data-level="2.1" data-path="stitch.html"><a href="stitch.html#input"><i class="fa fa-check"></i><b>2.1</b> Input</a></li>
+<li class="chapter" data-level="2.2" data-path="stitch.html"><a href="stitch.html#output"><i class="fa fa-check"></i><b>2.2</b> Output</a></li>
+<li class="chapter" data-level="2.3" data-path="stitch.html"><a href="stitch.html#installation-1"><i class="fa fa-check"></i><b>2.3</b> Installation</a></li>
+<li class="chapter" data-level="2.4" data-path="stitch.html"><a href="stitch.html#usage-1"><i class="fa fa-check"></i><b>2.4</b> Usage</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="stitch.html"><a href="stitch.html#docker-container"><i class="fa fa-check"></i><b>2.4.1</b> Docker container</a></li>
+<li class="chapter" data-level="2.4.2" data-path="stitch.html"><a href="stitch.html#instructions-python"><i class="fa fa-check"></i><b>2.4.2</b> Native Python</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="stitch.html"><a href="stitch.html#example"><i class="fa fa-check"></i><b>2.5</b> Example</a></li>
+<li class="chapter" data-level="2.6" data-path="stitch.html"><a href="stitch.html#more-details"><i class="fa fa-check"></i><b>2.6</b> More details</a></li>
+<li class="chapter" data-level="2.7" data-path="stitch.html"><a href="stitch.html#references"><i class="fa fa-check"></i><b>2.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="segment.html"><a href="segment.html"><i class="fa fa-check"></i><b>3</b> Image Segmentation</a><ul>
+<li class="chapter" data-level="3.1" data-path="segment.html"><a href="segment.html#preprocess"><i class="fa fa-check"></i><b>3.1</b> Image Preprocessing</a></li>
+<li class="chapter" data-level="3.2" data-path="segment.html"><a href="segment.html#binarize"><i class="fa fa-check"></i><b>3.2</b> Probability map binarization</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="features.html"><a href="features.html"><i class="fa fa-check"></i><b>4</b> Extract spatial single cell features</a></li>
+<li class="chapter" data-level="5" data-path="celltype.html"><a href="celltype.html"><i class="fa fa-check"></i><b>5</b> Assignment of cell type/state identity</a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="_blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Image Processing Pipeline</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="segment" class="section level1">
+<h1><span class="header-section-number">3</span> Image Segmentation</h1>
+<p>Segmentation consists of two distinct steps:</p>
+<ol style="list-style-type: decimal">
+<li><a href="segment.html#preprocess">Pre-processing of images</a> to generate probability maps for background, nuclei contours and nuclei centers.</li>
+<li><a href="segment.html#binarize">Binarizing the resulting probability maps</a> to identify pixel regions corresponding to individual cells.</li>
+</ol>
+<div id="preprocess" class="section level2">
+<h2><span class="header-section-number">3.1</span> Image Preprocessing</h2>
+<p>The current tool for image preprocessing is UnMicst (UNet Model for Identifying Cells and Segmenting Tissue).</p>
+<p>Images can be preprocessed by inferring nuclei contours via a pretrained UNet model. The model is trained on 3 classes : background, nuclei contours and nuclei centers. The resulting probability maps can then be loaded into any modular segmentation pipeline that may use (but not limited to) a marker controlled watershed algorithm.</p>
+<p>The only <strong>input</strong> file is:
+an .ome.tif or .tif (preferably flat field corrected, minimal saturated pixels, and in focus. The model is trained on images acquired at 20x with binning 2x2 or a pixel size of 0.65 microns/px. If your settings differ, you can upsample/downsample to some extent.</p>
+<p><strong>How to install:</strong>
+1. Copy the python script, UNet model, and ImageScience toolbox to your computer. Clone from <a href="https://github.com/HMS-IDAC/UnMicst.git" class="uri">https://github.com/HMS-IDAC/UnMicst.git</a>
+2. Pip install tensorflow (or tensorflow_gpu with CUDA drivers and CuDNN libraries), matplotlib, scikit-image, Pillow, tifffile, Image, scipy</p>
+<p><strong>How to run:</strong><br/>
+3. Open the python script batchUNet2DtCycif.py in an editor.<br/>
+4. Make the following changes to the code to reflect the locations of your data and supporting files:<br/>
+-line 10 update the path to the ImageScience toolbox folder <code>sys.path.insert(0, 'path//to//UNet code//ImageScience')</code><br/>
+-line 509 update the path to the model <br/>
+<code>modelPath = 'modelPath = 'path//to//UNet code//TFModel - 3class 16 kernels 5ks 2 layers'</code><br/>
+-line 515 update the path to the top level experiment folder of the data <br/>
+<code>imagePath = 'path//to//parent//folder//of//data'</code> <br/>
+your files should be stored in a subfolder called <code>registration</code> <br/>
+-line 516 : if you have multiple samples and they have a similar prefix, add the prefix/suffix here: <br/><code>sampleList = glob.glob(imagePath + '//105*')</code><br/>
+-line 520 : if your files have a different extension from <strong>tif</strong>, you can change the extension here:<br/>
+<code>fileList = glob.glob(iSample + '//registration//*.tif')</code><br/></p>
+<p><strong>some helpful tips:</strong><br/>
+5. -line 517 - specify the channel to infer nuclei contours and centers. If you want to run UNet on the 1st channel (sometimes DAPI/Hoechst), put 0.<br/>
+-line 518 - if you acquired your images at a higher magnification (ie. 40x), you may want to downsample your image so that it is more similar to the trained model (ie. 20x binning 2x2, pixel size 0.65 microns).<br/></p>
+<ol start="6" style="list-style-type: decimal">
+<li><p>in your terminal, activate your virtual environment and run this python script:
+<code>python batchUNet2DtCycif.py</code></p></li>
+<li>If using tensorflow-gpu, your GPU card should be found. If not, prepare to hear your CPU fan fly!</li>
+<li><p>The probabilty map for the contours will be saved as a 3D tif file (concatenated with the original channel) and saved in a subfolder called `probmaps. The channel index you specified for inference is saved in the filename.</p></li>
+</ol>
+<p><strong>References:</strong> <br/>
+S Saka, Y Wang, J Kishi, A Zhu, Y Zeng, W Xie, K Kirli, C Yapp, M Cicconet, BJ Beliveau, SW Lapan, S Yin, M Lin, E Boyde, PS Kaeser, G Pihan, GM Church, P Yin, Highly multiplexed in situ protein imaging with signal amplification by Immuno-SABER, Nat Biotechnology (accepted)</p>
+</div>
+<div id="binarize" class="section level2">
+<h2><span class="header-section-number">3.2</span> Probability map binarization</h2>
+<p>S3segmenter is a Matlab-based set of functions that generates single cell (nuclei and cytoplasm) label masks. Inputs are:</p>
+<ol style="list-style-type: decimal">
+<li>an .ome.tif (preferably flat field corrected)</li>
+<li>a 3-class probability maps derived from a deep learning model such as UNet. Classes include background, nuclei contours, and nuclei foreground.</li>
+</ol>
+<p>The centers of each nuclei are obtained by finding local maxima from the nuclei foreground. These are used for marker-controlled watershed constrained by the nuclei contours.</p>
+<p>To segment cytoplasm, the nuclei are in turn used for a marker-controlled watershed segmentation constrained by a cytoplasmic marker such as B-catenin. The channel number of this marker must be specified. A 3-pixel annulus around each nucleus will also be used to segment cytoplasm.</p>
+<p><strong>How to run:</strong> In Matlab, set path to the folder of the cloned repo. Type: <code>O2batchS3segmenterWrapperR('/path/to/files/')</code></p>
+<p>Use the following name-value pairs arguments to customize the code to your experiment:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode octave"><code class="sourceCode octave"><a class="sourceLine" id="cb32-1" data-line-number="1">ip.addParamValue(<span class="st">&#39;HPC&#39;</span>,<span class="st">&#39;false&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;true&#39;</span>,<span class="st">&#39;false&#39;</span>}))); </a>
+<a class="sourceLine" id="cb32-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb32-3" data-line-number="3"><span class="co">% if using a cluster, this specifies which file index to work on </span></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4">ip.addParamValue(<span class="st">&#39;fileNum&#39;</span>,<span class="fl">1</span>,@(x)(<span class="fu">numel</span>(x) &gt; <span class="fl">0</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> )));</a>
+<a class="sourceLine" id="cb32-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb32-6" data-line-number="6"><span class="co">% select any number of channels for cytoplasm</span></a>
+<a class="sourceLine" id="cb32-7" data-line-number="7">ip.addParamValue(<span class="st">&#39;CytoMaskChan&#39;</span>,[<span class="fl">2</span>],@(x)(<span class="fu">numel</span>(x) &gt; <span class="fl">0</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> )));</a>
+<a class="sourceLine" id="cb32-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb32-9" data-line-number="9"><span class="co">% select any number of channels for tissue mask</span></a>
+<a class="sourceLine" id="cb32-10" data-line-number="10">ip.addParamValue(<span class="st">&#39;TissueMaskChan&#39;</span>,[<span class="fl">3</span>],@(x)(<span class="fu">numel</span>(x) &gt; <span class="fl">0</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> )));</a>
+<a class="sourceLine" id="cb32-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb32-12" data-line-number="12"><span class="co">% constrict the tissue mask to eliminate high autofluorescent regions</span></a>
+<a class="sourceLine" id="cb32-13" data-line-number="13">ip.addParamValue(<span class="st">&#39;RefineTissueMask&#39;</span>,[<span class="fl">0</span>],@(x)(<span class="fu">numel</span>(x) &gt; <span class="fl">0</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> ))); </a>
+<a class="sourceLine" id="cb32-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb32-15" data-line-number="15"><span class="co">% set to true if sample is TMA cores</span></a>
+<a class="sourceLine" id="cb32-16" data-line-number="16">ip.addParamValue(<span class="st">&#39;mask&#39;</span>,<span class="st">&#39;tissue&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;TMA&#39;</span>,<span class="st">&#39;tissue&#39;</span>,<span class="st">&#39;none&#39;</span>}))); </a>
+<a class="sourceLine" id="cb32-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb32-18" data-line-number="18"><span class="co">% interactiveCrop - a GUI-based crop selector, </span></a>
+<a class="sourceLine" id="cb32-19" data-line-number="19"><span class="co">%   &#39;autoCrop&#39; - takes the middle third region,</span></a>
+<a class="sourceLine" id="cb32-20" data-line-number="20"><span class="co">%   &#39;dearray&#39;, set to true if using TMA cores, </span></a>
+<a class="sourceLine" id="cb32-21" data-line-number="21"><span class="co">%   &#39;noCrop&#39;, no cropping</span></a>
+<a class="sourceLine" id="cb32-22" data-line-number="22">ip.addParamValue(<span class="st">&#39;crop&#39;</span>,<span class="st">&#39;noCrop&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;interactiveCrop&#39;</span>,<span class="st">&#39;autoCrop&#39;</span>,<span class="st">&#39;dearray&#39;</span>,<span class="st">&#39;noCrop&#39;</span>})));</a>
+<a class="sourceLine" id="cb32-23" data-line-number="23">ip.addParamValue(<span class="st">&#39;cytoMethod&#39;</span>,<span class="st">&#39;distanceTransform&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;RF&#39;</span>,<span class="st">&#39;distanceTransform&#39;</span>,<span class="st">&#39;bwdistanceTransform&#39;</span>,<span class="st">&#39;ring&#39;</span>})));</a>
+<a class="sourceLine" id="cb32-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb32-25" data-line-number="25"><span class="co">% feature to threshold nuclei. </span></a>
+<a class="sourceLine" id="cb32-26" data-line-number="26"><span class="co">%   &#39;IntPM&#39; - intensity of probability map, </span></a>
+<a class="sourceLine" id="cb32-27" data-line-number="27"><span class="co">%   &#39;Int&#39; - intensity of DAPI channel, </span></a>
+<a class="sourceLine" id="cb32-28" data-line-number="28"><span class="co">%   &#39;LoG&#39;, intensity of LoG filter response, </span></a>
+<a class="sourceLine" id="cb32-29" data-line-number="29"><span class="co">%   &#39;none&#39;, accept all nuclei</span></a>
+<a class="sourceLine" id="cb32-30" data-line-number="30">ip.addParamValue(<span class="st">&#39;nucleiFilter&#39;</span>,<span class="st">&#39;IntPM&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;LoG&#39;</span>,<span class="st">&#39;Int&#39;</span>,<span class="st">&#39;IntPM&#39;</span>,<span class="st">&#39;none&#39;</span>}))); </a>
+<a class="sourceLine" id="cb32-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb32-32" data-line-number="32"><span class="co">% extracts intensity features from mask</span></a>
+<a class="sourceLine" id="cb32-33" data-line-number="33">ip.addParamValue(<span class="st">&#39;measureFeatures&#39;</span>,<span class="st">&#39;false&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;true&#39;</span>,<span class="st">&#39;false&#39;</span>})));</a>
+<a class="sourceLine" id="cb32-34" data-line-number="34">ip.addParamValue(<span class="st">&#39;nucleiRegion&#39;</span>,<span class="st">&#39;watershedContourInt&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;watershedContourDist&#39;</span>,<span class="st">&#39;watershedContourInt&#39;</span>,<span class="st">&#39;watershedBWDist&#39;</span>,<span class="st">&#39;dilation&#39;</span>})));</a>
+<a class="sourceLine" id="cb32-35" data-line-number="35">ip.addParamValue(<span class="st">&#39;resizeFactor&#39;</span>,<span class="fl">1</span>,@(x)(<span class="fu">numel</span>(x) == <span class="fl">1</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> )));</a>
+<a class="sourceLine" id="cb32-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb32-37" data-line-number="37"><span class="co">% specify range of nuclei diameters in pixels ie [3 30]. </span></a>
+<a class="sourceLine" id="cb32-38" data-line-number="38">ip.addParamValue(<span class="st">&#39;logSigma&#39;</span>,[<span class="fl">2.5</span>],@(x)(<span class="fu">numel</span>(x) &gt;<span class="fl">0</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> ))); </a>
+<a class="sourceLine" id="cb32-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb32-40" data-line-number="40"><span class="co">% channels for measuring features. If 0, assume all channels. </span></a>
+<a class="sourceLine" id="cb32-41" data-line-number="41">ip.addParamValue(<span class="st">&#39;chanRange&#39;</span>,[<span class="fl">0</span>],@(x)(<span class="fu">numel</span>(x) &gt;<span class="fl">0</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> ))); </a>
+<a class="sourceLine" id="cb32-42" data-line-number="42">ip.addParamValue(<span class="st">&#39;upSample&#39;</span>,<span class="fl">2</span>,@(x)(<span class="fu">numel</span>(x) == <span class="fl">1</span> &amp; <span class="fu">all</span>(x &gt; <span class="fl">0</span> )));</a>
+<a class="sourceLine" id="cb32-43" data-line-number="43">ip.addParamValue(<span class="st">&#39;Docker&#39;</span>,<span class="st">&#39;false&#39;</span>,@(x)(<span class="fu">ismember</span>(x,{<span class="st">&#39;true&#39;</span>,<span class="st">&#39;false&#39;</span>}))); </a>
+<a class="sourceLine" id="cb32-44" data-line-number="44">ip.addParamValue(<span class="st">&#39;dockerParams&#39;</span>,<span class="fl">0</span>,@(x)(<span class="fu">numel</span>(x)==<span class="fl">1</span>));</a></code></pre></div>
+<p>Segmentation label masks for nuclei, cytoplasm, and cell will be saved to a subfolder under each parent image folder as a .tif file. Also saved are a 2-channel tif file with the DAPI and nuclei outlines for quality control.</p>
+<p><strong>References:</strong>
+S Saka, Y Wang, J Kishi, A Zhu, Y Zeng, W Xie, K Kirli, C Yapp, M Cicconet, BJ Beliveau, SW Lapan, S Yin, M Lin, E Boyde, PS Kaeser, G Pihan, GM Church, P Yin, Highly multiplexed in situ protein imaging with signal amplification by Immuno-SABER, Nat Biotechnology (accepted)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="stitch.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="features.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"],
+"github": true
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
