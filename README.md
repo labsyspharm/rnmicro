@@ -1,4 +1,6 @@
-# Mcmicro
+# Mcmicro - DEPRECATED
+
+The repo is deprecated. Please use the new Nextflow version on https://github.com/labsyspharm/mcmicro-nf
 
 Purpose: Provide pipeline platform infrastructure to streamline CyCIF Analysis
 both on a local machine and on the O2 cluster at HMS
